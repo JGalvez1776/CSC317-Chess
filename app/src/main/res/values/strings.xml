@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Chess</string>
+    <string name="title">CHESS</string>
+    <string name="new_game">NEW GAME</string>
+    <string name="cont">CONTINUE</string>
+    <string name="daily_puzzle">DAILY PUZZLE</string>
 </resources>
