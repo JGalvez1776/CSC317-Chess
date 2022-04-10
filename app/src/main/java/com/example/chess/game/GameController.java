@@ -10,6 +10,8 @@ package com.example.chess.game;
 import com.example.chess.game.components.Board;
 import com.example.chess.game.pieces.Piece;
 
+import java.util.Locale;
+
 public class GameController {
     private final Board game;
     private Piece selected = null;
@@ -43,7 +45,8 @@ public class GameController {
      */
     public String getPieceName(int x, int y) {
         Piece piece = game.getPiece(x, y);
-        return piece != null ? piece.getPlayer() + piece.getName() : null;
+        String name = piece.getPlayer() + piece.getName();
+        return piece != null ? name.toLowerCase() : null;
         
     }
 
