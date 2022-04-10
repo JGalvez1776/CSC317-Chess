@@ -12,6 +12,10 @@ public class GameController {
     // a public static final int PIECE_SELECTED = 1;
     // a public static final int PIECE_MOVED = 2;
 
+    public GameController() {
+        this.game = new Board();
+    }
+
     public GameController(Board game) {
         this.game = game;
     }
