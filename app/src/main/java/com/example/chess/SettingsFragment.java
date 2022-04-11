@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-public class SettingsFragment extends Fragment implements View.OnClickListener {
+public class SettingsFragment extends Fragment {
 
     private static final int LAYOUT = R.layout.fragment_settings;
 
@@ -18,7 +18,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     /**
      * Sets container activity.
-     * @param containerActivity - activity that fragment is contained in
+     * @param containerActivity activity that fragment is contained in
      */
     public void setContainerActivity(AppCompatActivity containerActivity) {
         this.containerActivity = containerActivity;
@@ -26,9 +26,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     /**
      * Upon view creation, sets layout, and returns inflated view.
-     * @param inflater - layout inflater
-     * @param container - view group container
-     * @param savedInstanceState - saved instance state
+     * @param inflater layout inflater
+     * @param container view group container
+     * @param savedInstanceState saved instance state
      * @return Inflated view.
      */
     @Override
@@ -37,22 +37,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         // get inflated view
         inflatedView = inflater.inflate(LAYOUT, container, false);
 
-        // setup buttons
-
         return inflatedView;
     }
 
-    /**
-     * Holds on click functions for each button in the layout.
-     * @param view - view that was clicked
-     */
-    @Override
-    public void onClick(View view) {
-        FragmentTransaction transaction = containerActivity.
-                getSupportFragmentManager().beginTransaction();
+    // TODO: listeners for radio/switches
 
-        switch (view.getId()) {
-
-        }
-    }
 }

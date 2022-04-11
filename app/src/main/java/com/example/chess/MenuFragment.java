@@ -60,11 +60,21 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
 
         switch (view.getId()) {
             case R.id.new_game_button:
-
+                GameFragment gf = new GameFragment();
+                gf.setContainerActivity(containerActivity);
+                transaction.replace(R.id.container, gf);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                break;
             case R.id.continue_button:
-
+                break;
             case R.id.daily_puzzle_button:
-
+                PuzzleFragment pf = new PuzzleFragment();
+                pf.setContainerActivity(containerActivity);
+                transaction.replace(R.id.container, pf);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                break;
             case R.id.settings_button:
                 SettingsFragment sf = new SettingsFragment();
                 sf.setContainerActivity(containerActivity);
@@ -73,7 +83,12 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
                 transaction.commit();
                 break;
             case R.id.help_button:
-
+                HelpFragment hf = new HelpFragment();
+                hf.setContainerActivity(containerActivity);
+                transaction.replace(R.id.container, hf);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                break;
         }
     }
 

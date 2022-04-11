@@ -45,8 +45,9 @@ public class GameController {
      */
     public String getPieceName(int x, int y) {
         Piece piece = game.getPiece(x, y);
-        String name = piece.getPlayer() + piece.getName();
-        return piece != null ? name.toLowerCase() : null;
+        if (piece == null) return null;
+        String name = piece.getName();
+        return name.toLowerCase();
         
     }
 
