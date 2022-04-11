@@ -65,6 +65,17 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         pieceMap = createPieceMap();
         updateBoard(controller, pieceMap, inflatedView, containerActivity);
 
+        // add listener for board squares
+        GridView gridView = inflatedView.findViewById(R.id.board);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                // TODO: click on board square functionality
+                System.out.println(getX(position)+" "+getY(position));
+            }
+        });
+
         return inflatedView;
     }
 
@@ -103,13 +114,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         // set adapter and listener
         GridView gridView = inflatedView.findViewById(R.id.board);
         gridView.setAdapter(getAdapter(gc, pm, containerActivity));
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                // TODO: click on board square functionality
-            }
-        });
     }
 
     /**
@@ -117,7 +121,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * @param position raw position
      * @return X coordinate.
      */
-    private int getX(int position) {
+    public int getX(int position) {
         return position%8;
     }
 
@@ -126,7 +130,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * @param position raw position
      * @return Y coordinate.
      */
-    private int getY(int position) {
+    public int getY(int position) {
         return position/8;
     }
 

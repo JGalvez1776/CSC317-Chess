@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,6 +57,17 @@ public class PuzzleFragment extends GameFragment {
         controller = setupBoard();
         pieceMap = createPieceMap();
         updateBoard(controller, pieceMap, inflatedView, containerActivity);
+
+        // add listener for board squares
+        GridView gridView = inflatedView.findViewById(R.id.board);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                // TODO: click on board square functionality
+                System.out.println(getX(position)+" "+getY(position));
+            }
+        });
 
         return inflatedView;
     }
