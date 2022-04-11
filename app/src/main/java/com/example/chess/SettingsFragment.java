@@ -1,7 +1,5 @@
 package com.example.chess;
 
-import android.app.Activity;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-public class MenuFragment extends Fragment implements View.OnClickListener {
+public class SettingsFragment extends Fragment implements View.OnClickListener {
 
-    private static final int LAYOUT = R.layout.fragment_menu;
+    private static final int LAYOUT = R.layout.fragment_settings;
 
     private AppCompatActivity containerActivity;
     private View inflatedView;
@@ -40,11 +38,6 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
         inflatedView = inflater.inflate(LAYOUT, container, false);
 
         // setup buttons
-        inflatedView.findViewById(R.id.new_game_button).setOnClickListener(this);
-        inflatedView.findViewById(R.id.continue_button).setOnClickListener(this);
-        inflatedView.findViewById(R.id.daily_puzzle_button).setOnClickListener(this);
-        inflatedView.findViewById(R.id.settings_button).setOnClickListener(this);
-        inflatedView.findViewById(R.id.help_button).setOnClickListener(this);
 
         return inflatedView;
     }
@@ -59,22 +52,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
                 getSupportFragmentManager().beginTransaction();
 
         switch (view.getId()) {
-            case R.id.new_game_button:
-
-            case R.id.continue_button:
-
-            case R.id.daily_puzzle_button:
-
-            case R.id.settings_button:
-                SettingsFragment sf = new SettingsFragment();
-                sf.setContainerActivity(containerActivity);
-                transaction.replace(R.id.container, sf);
-                transaction.addToBackStack(null);
-                transaction.commit();
-                break;
-            case R.id.help_button:
 
         }
     }
-
 }

@@ -7,6 +7,18 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <!-- Heading Text !-->
+    <style name="Heading">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <!-- Body Text !-->
+    <style name="Body">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
     <!-- Menu Button !-->
     <style name="MenuButton">
         <item name="android:background">@color/black</item>

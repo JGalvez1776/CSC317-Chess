@@ -4,4 +4,11 @@
     <string name="new_game">NEW GAME</string>
     <string name="cont">CONTINUE</string>
     <string name="daily_puzzle">DAILY PUZZLE</string>
+    <string name="theme">Theme</string>
+    <string name="animation_setting">Enable Animation</string>
+    <string name="undo_setting">Allow Undo</string>
+    <string name="theme1">Classic</string>
+    <string name="theme2">Wooden</string>
+    <string name="theme3">Olive</string>
+    <string name="theme4">Night</string>
 </resources>
