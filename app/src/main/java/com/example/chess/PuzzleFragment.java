@@ -23,6 +23,14 @@ public class PuzzleFragment extends GameFragment {
     private HashMap<String,Integer> pieceMap;
 
     /**
+     * Sets container activity.
+     * @param containerActivity activity that fragment is contained in
+     */
+    public void setContainerActivity(AppCompatActivity containerActivity) {
+        this.containerActivity = containerActivity;
+    }
+
+    /**
      * Upon view creation, sets layout, and returns inflated view.
      * @param inflater layout inflater
      * @param container view group container
@@ -46,7 +54,7 @@ public class PuzzleFragment extends GameFragment {
         // create the game controller
         controller = setupBoard();
         pieceMap = createPieceMap();
-        updateBoard(controller, pieceMap, inflatedView);
+        updateBoard(controller, pieceMap, inflatedView, containerActivity);
 
         return inflatedView;
     }

@@ -63,7 +63,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         // create the game controller
         controller = setupBoard();
         pieceMap = createPieceMap();
-        updateBoard(controller, pieceMap, inflatedView);
+        updateBoard(controller, pieceMap, inflatedView, containerActivity);
 
         return inflatedView;
     }
@@ -97,11 +97,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * @param gc GameController to update from
      * @param pm piece map to use
      * @param inflatedView current fragment view
+     * @param containerActivity activity that contains this fragment
      */
-    public void updateBoard(GameController gc, HashMap<String,Integer> pm, View inflatedView) {
+    public void updateBoard(GameController gc, HashMap<String,Integer> pm, View inflatedView, AppCompatActivity containerActivity) {
         // set adapter and listener
         GridView gridView = inflatedView.findViewById(R.id.board);
-        gridView.setAdapter(getAdapter(gc, pm));
+        gridView.setAdapter(getAdapter(gc, pm, containerActivity));
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v,
@@ -171,9 +172,10 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * Gets simple adapter needed to update board.
      * @param gc GameController to update from
      * @param pm piece map to use
+     * @param containerActivity activity that contains this fragment
      * @return SimpleAdapter to update board with.
      */
-    private SimpleAdapter getAdapter(GameController gc, HashMap<String,Integer> pm) {
+    private SimpleAdapter getAdapter(GameController gc, HashMap<String,Integer> pm, AppCompatActivity containerActivity) {
         // get list for simple adapter
         ArrayList<HashMap<String,Object>> boardList = getBoardList(gc, pm);
 
