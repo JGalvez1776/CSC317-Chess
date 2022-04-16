@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="10dp">
+
+    <TextView
+        style="@style/Heading"
+        android:id="@+id/theme_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="@string/theme" />
+
+    <RadioGroup
+        android:id="@+id/theme_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp" >
+
+        <RadioButton
+            style="@style/Body"
+            android:id="@+id/theme1_selection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/theme1"
+            android:checked="true" />
+
+        <RadioButton
+            style="@style/Body"
+            android:id="@+id/theme2_selection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/theme2"/>
+
+        <RadioButton
+            style="@style/Body"
+            android:id="@+id/theme3_selection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/theme3"/>
+
+        <RadioButton
+            style="@style/Body"
+            android:id="@+id/theme4_selection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/theme4"/>
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/animation_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.SwitchCompat
+            style="@style/Body"
+            android:id="@+id/animation_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:layout_marginRight="5dp"/>
+
+        <TextView
+            style="@style/Body"
+            android:id="@+id/animation_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/animation_setting"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/undo_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.SwitchCompat
+            style="@style/Body"
+            android:id="@+id/undo_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:layout_marginRight="5dp" />
+
+        <TextView
+            style="@style/Body"
+            android:id="@+id/undo_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/undo_setting"/>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

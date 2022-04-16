@@ -12,4 +12,9 @@ public class Player {
     public String toString() {
         return name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Player && this.toString().equals(o.toString());
+    }
 }
