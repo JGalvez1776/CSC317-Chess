@@ -14,12 +14,13 @@ import java.util.Locale;
 
 public class GameController {
     private final Board game;
-    private Piece selected = null;
+    //private Piece selected = null;
+    private int[] selected = null;
 
     // TODO: Fill in
-    // a public static final int NOTHING_SELECTED = 0;
-    // a public static final int PIECE_SELECTED = 1;
-    // a public static final int PIECE_MOVED = 2;
+    public static final int NOTHING_SELECTED = 0;
+    public static final int PIECE_SELECTED = 1;
+    public static final int PIECE_MOVED = 2;
 
     /**
      * Default constructor that initializes with default game of chess
@@ -45,11 +46,16 @@ public class GameController {
      */
     public String getPieceName(int x, int y) {
         // Converts y to match implementation of the model
-        Piece piece = game.getPiece(x, Math.abs(Board.HEIGHT - y - 1));
+        y = convertPosition(x, y)[1];
+        Piece piece = game.getPiece(x, y);
         if (piece == null) return null;
         String name = piece.getName();
         return name.toLowerCase();
         
+    }
+
+    private int[] convertPosition(int x, int y) {
+        return new int[] {x, Math.abs(Board.HEIGHT - y - 1)};
     }
 
     /*
@@ -75,16 +81,29 @@ public class GameController {
                 Piece moved - 2
          */
 
-        if (selected != null) {
+        y = convertPosition(x, y)[1];
+
+        if (selected == null) {
             // Selected the piece and returns if the pieces is real (Properly selected)
-            selected = game.getPiece(x, y);
+            Piece selectedPiece = game.getPiece(x, y);
+
+            if (selectedPiece != null && selectedPiece.getPlayer().equals(game.getCurrentPlayer()))
+                    selected = new int[]{x, y};
+
+            //selected = selectedPiece != null ? new int[]{x, y} : null;
+            //selected = game.getPiece(x, y);
             return selected != null ? 1 : 0;
         } else {
             // TODO: If not valid unselect, otherwise move and return 2
 
-            
+            if (false) {
+                // Have unselect if piece is invalid
+                return 0;
+            }
+            game.move(selected[0], selected[1], x, y);
+            selected = null;
 
-            return 0;
+            return 2;
         }
     }
 }

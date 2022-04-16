@@ -28,8 +28,8 @@ public abstract class Piece {
         return owner + name;
     }
 
-    public String getPlayer() {
-        return owner.toString();
+    public Player getPlayer() {
+        return owner;
     }
 
     protected int getNextID() {

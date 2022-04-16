@@ -75,6 +75,20 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 int x = getX(position);
                 int y = getY(position);
                 System.out.println(x + " " + y + " " + controller.getPieceName(x, y));
+                int result = controller.select(x, y);
+
+                switch (result) {
+                    case GameController.NOTHING_SELECTED:
+                        // TODO: Remove highlighted squares
+                        break;
+                    case GameController.PIECE_SELECTED:
+                        // TODO: Highlight selected squares and potential moves
+                        break;
+                    case GameController.PIECE_MOVED:
+                        updateBoard(controller, pieceMap, inflatedView, containerActivity);
+                        // TODO: Handle game logistics (Check, game over, update turn string)
+                        break;
+                }
             }
         });
 
