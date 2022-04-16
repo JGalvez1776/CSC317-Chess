@@ -72,7 +72,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 // TODO: click on board square functionality
-                System.out.println(getX(position)+" "+getY(position));
+                int x = getX(position);
+                int y = getY(position);
+                System.out.println(x + " " + y + " " + controller.getPieceName(x, y));
             }
         });
 
