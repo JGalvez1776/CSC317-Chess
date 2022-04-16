@@ -44,7 +44,8 @@ public class GameController {
      * @return String which is the name of the piece formatted as PlayerPiece EX: BlackPawn
      */
     public String getPieceName(int x, int y) {
-        Piece piece = game.getPiece(x, y);
+        // Converts y to match implementation of the model
+        Piece piece = game.getPiece(x, Math.abs(Board.HEIGHT - y - 1));
         if (piece == null) return null;
         String name = piece.getName();
         return name.toLowerCase();
@@ -75,10 +76,13 @@ public class GameController {
          */
 
         if (selected != null) {
+            // Selected the piece and returns if the pieces is real (Properly selected)
             selected = game.getPiece(x, y);
             return selected != null ? 1 : 0;
         } else {
             // TODO: If not valid unselect, otherwise move and return 2
+
+            
 
             return 0;
         }
