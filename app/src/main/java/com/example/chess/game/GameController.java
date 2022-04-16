@@ -58,11 +58,6 @@ public class GameController {
         return new int[] {x, Math.abs(Board.HEIGHT - y - 1)};
     }
 
-    /*
-        NOTE: This method is what we want to call when squares are clicked. At the moment
-        it's not fully implemented.
-     */
-
     /**
      * Serves the core game logic. Represents "selecting" a square on the board.
      * First call of select will select a piece at a square.
@@ -73,14 +68,6 @@ public class GameController {
      * @return int error code. See class's static constants
      */
     public int select(int x, int y) {
-        /*
-            TODO: Ignore this comment it's notes for me
-            Options:
-                Nothing/Piece unselected - 0
-                Piece first clicked - 1
-                Piece moved - 2
-         */
-
         y = convertPosition(x, y)[1];
 
         if (selected == null) {
@@ -89,21 +76,15 @@ public class GameController {
 
             if (selectedPiece != null && selectedPiece.getPlayer().equals(game.getCurrentPlayer()))
                     selected = new int[]{x, y};
-
-            //selected = selectedPiece != null ? new int[]{x, y} : null;
-            //selected = game.getPiece(x, y);
-            return selected != null ? 1 : 0;
+            return selected != null ? PIECE_SELECTED : NOTHING_SELECTED;
         } else {
-            // TODO: If not valid unselect, otherwise move and return 2
-
             if (false) {
-                // Have unselect if piece is invalid
-                return 0;
+                // TODO: Have unselect if piece is invalid
+                return NOTHING_SELECTED;
             }
             game.move(selected[0], selected[1], x, y);
             selected = null;
-
-            return 2;
+            return PIECE_MOVED;
         }
     }
 
