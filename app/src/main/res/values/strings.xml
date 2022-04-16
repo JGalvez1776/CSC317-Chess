@@ -11,4 +11,7 @@
     <string name="theme2">Wooden</string>
     <string name="theme3">Olive</string>
     <string name="theme4">Night</string>
+    <string name="white_turn">WHITE\'S TURN</string>
+    <string name="black_turn">BLACK\'S TURN</string>
+
 </resources>
