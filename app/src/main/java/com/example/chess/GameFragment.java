@@ -130,6 +130,13 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         // set adapter and listener
         GridView gridView = inflatedView.findViewById(R.id.board);
         gridView.setAdapter(getAdapter(gc, pm, containerActivity));
+
+        // TODO: Might be able to use this TextView to display checkmate/check
+        // Sets correct player text
+        TextView playerText = inflatedView.findViewById(R.id.current_turn);
+        String player = controller.getCurrentPlayer();
+        int playerStringId = player.equals(GameController.WHITE) ? R.string.white_turn : R.string.black_turn;
+        playerText.setText(getText(playerStringId));
     }
 
     /**
