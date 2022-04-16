@@ -14,13 +14,13 @@ import java.util.Locale;
 
 public class GameController {
     private final Board game;
-    //private Piece selected = null;
     private int[] selected = null;
 
-    // TODO: Fill in
     public static final int NOTHING_SELECTED = 0;
     public static final int PIECE_SELECTED = 1;
     public static final int PIECE_MOVED = 2;
+    public static final String BLACK = Board.BLACK;
+    public static final String WHITE = Board.WHITE;
 
     /**
      * Default constructor that initializes with default game of chess
@@ -106,4 +106,9 @@ public class GameController {
             return 2;
         }
     }
+
+    public String getCurrentPlayer() {
+        return game.getCurrentPlayer().toString();
+    }
+
 }
