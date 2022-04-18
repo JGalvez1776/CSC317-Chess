@@ -11,4 +11,25 @@
     <string name="theme2">Wooden</string>
     <string name="theme3">Olive</string>
     <string name="theme4">Night</string>
+    <string name="white_turn">WHITE\'S TURN</string>
+    <string name="black_turn">BLACK\'S TURN</string>
+
+    <string name="chess_help_title">STANDARD CHESS</string>
+    <string name="chess_help1">\"New Game\" starts a new game of chess where two players can play
+        against each other locally.</string>
+    <string name="chess_help2">\"Continue\" allows the user to play the last saved game of chess.</string>
+    <string name="chess_help3">While playing, the state of the game will be saved.
+    If "New Game" is selected while there is already a saved game, the saved game will be
+    overwritten with a new game.</string>
+
+    <string name="puzzle_help_title">DAILY PUZZLE</string>
+    <string name="puzzle_help">An alternative mode of chess where you are given a
+    chess scenario to solve. Try to make the best moves in the least number of attempts.</string>
+
+    <string name="settings_help_title">SETTINGS</string>
+    <string name="settings_help">The theme settings allow you to change the colors of the app.
+        You may also disable/enable animation or allow/disallow the ability to undo in a standard
+    game of chess.</string>
+
+    <string name="rules_button">HOW TO PLAY CHESS</string>
 </resources>
