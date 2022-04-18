@@ -72,7 +72,23 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 // TODO: click on board square functionality
-                System.out.println(getX(position)+" "+getY(position));
+                int x = getX(position);
+                int y = getY(position);
+                System.out.println(x + " " + y + " " + controller.getPieceName(x, y));
+                int result = controller.select(x, y);
+
+                switch (result) {
+                    case GameController.NOTHING_SELECTED:
+                        // TODO: Remove highlighted squares
+                        break;
+                    case GameController.PIECE_SELECTED:
+                        // TODO: Highlight selected squares and potential moves
+                        break;
+                    case GameController.PIECE_MOVED:
+                        updateBoard(controller, pieceMap, inflatedView, containerActivity);
+                        // TODO: Handle game logistics (Check, game over, update turn string)
+                        break;
+                }
             }
         });
 
@@ -114,6 +130,13 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         // set adapter and listener
         GridView gridView = inflatedView.findViewById(R.id.board);
         gridView.setAdapter(getAdapter(gc, pm, containerActivity));
+
+        // TODO: Might be able to use this TextView to display checkmate/check
+        // Sets correct player text
+        TextView playerText = inflatedView.findViewById(R.id.current_turn);
+        String player = controller.getCurrentPlayer();
+        int playerStringId = player.equals(GameController.WHITE) ? R.string.white_turn : R.string.black_turn;
+        playerText.setText(getText(playerStringId));
     }
 
     /**

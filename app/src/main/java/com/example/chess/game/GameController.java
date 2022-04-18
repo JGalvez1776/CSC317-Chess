@@ -14,12 +14,13 @@ import java.util.Locale;
 
 public class GameController {
     private final Board game;
-    private Piece selected = null;
+    private int[] selected = null;
 
-    // TODO: Fill in
-    // a public static final int NOTHING_SELECTED = 0;
-    // a public static final int PIECE_SELECTED = 1;
-    // a public static final int PIECE_MOVED = 2;
+    public static final int NOTHING_SELECTED = 0;
+    public static final int PIECE_SELECTED = 1;
+    public static final int PIECE_MOVED = 2;
+    public static final String BLACK = Board.BLACK;
+    public static final String WHITE = Board.WHITE;
 
     /**
      * Default constructor that initializes with default game of chess
@@ -44,6 +45,8 @@ public class GameController {
      * @return String which is the name of the piece formatted as PlayerPiece EX: BlackPawn
      */
     public String getPieceName(int x, int y) {
+        // Converts y to match implementation of the model
+        y = convertPosition(x, y)[1];
         Piece piece = game.getPiece(x, y);
         if (piece == null) return null;
         String name = piece.getName();
@@ -51,10 +54,9 @@ public class GameController {
         
     }
 
-    /*
-        NOTE: This method is what we want to call when squares are clicked. At the moment
-        it's not fully implemented.
-     */
+    private int[] convertPosition(int x, int y) {
+        return new int[] {x, Math.abs(Board.HEIGHT - y - 1)};
+    }
 
     /**
      * Serves the core game logic. Represents "selecting" a square on the board.
@@ -66,21 +68,28 @@ public class GameController {
      * @return int error code. See class's static constants
      */
     public int select(int x, int y) {
-        /*
-            TODO: Ignore this comment it's notes for me
-            Options:
-                Nothing/Piece unselected - 0
-                Piece first clicked - 1
-                Piece moved - 2
-         */
+        y = convertPosition(x, y)[1];
 
-        if (selected != null) {
-            selected = game.getPiece(x, y);
-            return selected != null ? 1 : 0;
+        if (selected == null) {
+            // Selected the piece and returns if the pieces is real (Properly selected)
+            Piece selectedPiece = game.getPiece(x, y);
+
+            if (selectedPiece != null && selectedPiece.getPlayer().equals(game.getCurrentPlayer()))
+                    selected = new int[]{x, y};
+            return selected != null ? PIECE_SELECTED : NOTHING_SELECTED;
         } else {
-            // TODO: If not valid unselect, otherwise move and return 2
-
-            return 0;
+            if (false) {
+                // TODO: Have unselect if piece is invalid
+                return NOTHING_SELECTED;
+            }
+            game.move(selected[0], selected[1], x, y);
+            selected = null;
+            return PIECE_MOVED;
         }
     }
+
+    public String getCurrentPlayer() {
+        return game.getCurrentPlayer().toString();
+    }
+
 }

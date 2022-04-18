@@ -9,9 +9,12 @@ import com.example.chess.game.pieces.concrete.*;
 public class Board {
     public static final int WIDTH = 8;
     public static final int HEIGHT = 8;
+    public static final String WHITE = "White";
+    public static final String BLACK = "Black";
     
     private Piece[][] board = new Piece[HEIGHT][WIDTH];
-    private Player[] players = new Player[]{new Player("White"), new Player("Black")};
+    private Player[] players = new Player[]{new Player(WHITE), new Player(BLACK)};
+    private int currentPlayer = 0;
 
     private static final String DEFAULT_BOARD = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR ";
     private static HashMap<Character, Placeable> pieceMap;
@@ -53,10 +56,28 @@ public class Board {
         }
     }
 
+    public void move(int startX, int startY, int endX, int endY) {
+        Piece selected = getPiece(startX, startY);
+        // TODO: Add in all the special moves / check for it here
+
+        place(null, startX, startY);
+        place(selected, endX, endY);
+        currentPlayer = (currentPlayer + 1) % players.length;
+
+    }
+
+    private void place(Piece piece, int x, int y) {
+        board[y][x] = piece;
+    }
+
 
 
     public Piece getPiece(int x, int y) {
         return board[y][x];
+    }
+
+    public Player getCurrentPlayer() {
+        return players[currentPlayer];
     }
 
 
