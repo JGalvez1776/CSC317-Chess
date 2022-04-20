@@ -206,7 +206,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         // TODO: Might be able to use this TextView to display checkmate/check
         // Sets correct player text
         TextView playerText = inflatedView.findViewById(R.id.current_turn);
-        String player = controller.getCurrentPlayer();
+        String player = gc.getCurrentPlayer();
         int playerStringId = player.equals(GameController.WHITE) ? R.string.white_turn : R.string.black_turn;
         playerText.setText(getText(playerStringId));
     }

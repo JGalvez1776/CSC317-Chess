@@ -50,13 +50,13 @@ public class PuzzleFragment extends GameFragment {
         // TODO: implement undo button toggle
         inflatedView.findViewById(R.id.undo_button).setOnClickListener(this);
 
-        // update view to fit game mode
-        ((TextView) inflatedView.findViewById(R.id.current_turn)).setText("");
-
         // create the game controller
         controller = setupBoard();
         pieceMap = createPieceMap();
         updateBoard(controller, pieceMap, inflatedView, containerActivity);
+
+        // update view to fit game mode
+        ((TextView) inflatedView.findViewById(R.id.current_turn)).setText("");
 
         // add listener for board squares
         GridView gridView = inflatedView.findViewById(R.id.board);
