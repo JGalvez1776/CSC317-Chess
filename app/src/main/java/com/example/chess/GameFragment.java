@@ -1,14 +1,22 @@
 package com.example.chess;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -30,6 +38,13 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private View inflatedView;
     private GameController controller;
     private HashMap<String,Integer> pieceMap;
+
+    // for animation
+    private ImageView selectedPiece;
+    // 0 = drawable id, 1 = x, 2 = y
+    private int selectedPieceVals[] = new int[3];
+    // 0 = ui x, 1 = ui y
+    private int selectedPiecePos[] = new int[2];
 
     /**
      * Sets container activity.
@@ -74,22 +89,34 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 // TODO: click on board square functionality
                 int x = getX(position);
                 int y = getY(position);
-                System.out.println(x + " " + y + " " + controller.getPieceName(x, y));
+                String name = controller.getPieceName(x, y);
                 int result = controller.select(x, y);
+
+                // animation helper values
+                ImageView clone = inflatedView.findViewById(R.id.piece_clone);
 
                 switch (result) {
                     case GameController.NOTHING_SELECTED:
                         // TODO: Remove highlighted squares
                         break;
                     case GameController.PIECE_SELECTED:
+                        // highlights piece
                         TextView square = v.findViewById(R.id.square);
                         square.setBackgroundColor(getResources().getColor(R.color.yellow));
+
+                        // gets selected piece values
+                        selectedPiece = v.findViewById(R.id.piece);
+                        selectedPieceVals[0] = pieceMap.get(name);
+                        selectedPieceVals[1] = x; selectedPieceVals[2] = y;
+
+                        // get position onscreen
+                        square.getLocationInWindow(selectedPiecePos);
+                        System.out.println(selectedPiecePos[0]+" "+selectedPiecePos[1]);
+
                         // TODO: Highlight potential moves
                         break;
                     case GameController.PIECE_MOVED:
-
-
-                        updateBoard(controller, pieceMap, inflatedView, containerActivity);
+                        animatePiece(clone, x, y);
 
                         // TODO: Handle game logistics (Check, game over, update turn string)
                         break;
@@ -99,6 +126,46 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
         return inflatedView;
     }
+
+    public static int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    private void animatePiece(ImageView clone, int x, int y) {
+        // hides original, initializes clone
+        selectedPiece.setAlpha(0.0f);
+        clone.setAlpha(1.0f);
+        clone.setImageDrawable(getResources().getDrawable(selectedPieceVals[0]));
+        clone.setX(selectedPiecePos[0]); clone.setY(selectedPiecePos[1]-63);
+
+        // animate clone to end location
+        int squareSize = dpToPx(50);
+        int moveX = x-selectedPieceVals[1];
+        int moveY = y-selectedPieceVals[2];
+
+        PropertyValuesHolder pX = PropertyValuesHolder.ofFloat("translationX",
+                clone.getTranslationX()+(moveX*(squareSize)));
+        PropertyValuesHolder pY = PropertyValuesHolder.ofFloat("translationY",
+                clone.getTranslationY()+(moveY*squareSize));
+        ObjectAnimator pieceMove = ObjectAnimator.ofPropertyValuesHolder(clone,pX,pY);
+        pieceMove.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {}
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // updates board
+                updateBoard(controller, pieceMap, inflatedView, containerActivity);
+                clone.setAlpha(0.0f);
+            }
+            @Override
+            public void onAnimationCancel(Animator animation) {}
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+        });
+        pieceMove.setDuration(1000);
+        pieceMove.start();
+    }
+
 
     /**
      * Creates a map of piece strings to their respective drawable ids.
