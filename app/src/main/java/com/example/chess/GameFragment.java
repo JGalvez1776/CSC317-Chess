@@ -82,7 +82,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                         // TODO: Remove highlighted squares
                         break;
                     case GameController.PIECE_SELECTED:
-                        // TODO: Highlight selected squares and potential moves
+                        TextView square = v.findViewById(R.id.square);
+                        square.setBackgroundColor(getResources().getColor(R.color.yellow));
+                        // TODO: Highlight potential moves
                         break;
                     case GameController.PIECE_MOVED:
                         updateBoard(controller, pieceMap, inflatedView, containerActivity);
@@ -222,7 +224,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView square = view.findViewById(R.id.square);
-                int color = getResources().getColor(R.color.gray); // something idk
+                int color = getResources().getColor(R.color.gray);
                 if (square.getText().toString().equals("W")) {
                     color = getResources().getColor(R.color.white);
                 }
