@@ -87,7 +87,10 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                         // TODO: Highlight potential moves
                         break;
                     case GameController.PIECE_MOVED:
+
+
                         updateBoard(controller, pieceMap, inflatedView, containerActivity);
+
                         // TODO: Handle game logistics (Check, game over, update turn string)
                         break;
                 }
