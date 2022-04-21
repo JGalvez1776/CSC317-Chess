@@ -36,7 +36,7 @@
         android:id="@+id/move_feedback"
         android:layout_width="0dp"
         android:layout_height="100dp"
-        android:text="e5 is incorrect!"
+        android:text="Loading Puzzle!"
         android:gravity="center"
         app:layout_constraintTop_toTopOf="@id/board_top"
         app:layout_constraintBottom_toTopOf="@id/board"

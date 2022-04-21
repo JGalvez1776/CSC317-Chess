@@ -26,11 +26,21 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
     private static final int LAYOUT = R.layout.fragment_game;
 
-    private AppCompatActivity containerActivity;
-    private View inflatedView;
-    private GameController controller;
-    private HashMap<String,Integer> pieceMap;
+    protected AppCompatActivity containerActivity;
+    protected View inflatedView;
+    protected GameController controller;
+    protected HashMap<String,Integer> pieceMap;
 
+<<<<<<< Updated upstream
+=======
+    // for animation
+    protected ImageView selectedPiece;
+    // 0 = drawable id, 1 = x, 2 = y
+    protected int selectedPieceVals[] = new int[3];
+    // 0 = ui x, 1 = ui y
+    protected int selectedPiecePos[] = new int[2];
+
+>>>>>>> Stashed changes
     /**
      * Sets container activity.
      * @param containerActivity activity that fragment is contained in
@@ -64,7 +74,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         controller = setupBoard();
         pieceMap = createPieceMap();
         updateBoard(controller, pieceMap, inflatedView, containerActivity);
+        addListeners();
 
+        return inflatedView;
+    }
+
+    protected void addListeners() {
         // add listener for board squares
         GridView gridView = inflatedView.findViewById(R.id.board);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -92,7 +107,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        return inflatedView;
     }
 
     /**
@@ -163,7 +177,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * @param pm piece map to use
      * @return List of mappings of square colors and piece names.
      */
-    private ArrayList<HashMap<String,Object>> getBoardList(GameController gc, HashMap<String,Integer> pm) {
+    protected ArrayList<HashMap<String,Object>> getBoardList(GameController gc, HashMap<String,Integer> pm) {
         // board list including square color and piece images
         ArrayList<HashMap<String,Object>> boardList = new ArrayList<HashMap<String,Object>>();
 
@@ -202,7 +216,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * @param containerActivity activity that contains this fragment
      * @return SimpleAdapter to update board with.
      */
-    private SimpleAdapter getAdapter(GameController gc, HashMap<String,Integer> pm, AppCompatActivity containerActivity) {
+    protected SimpleAdapter getAdapter(GameController gc, HashMap<String,Integer> pm, AppCompatActivity containerActivity) {
         // get list for simple adapter
         ArrayList<HashMap<String,Object>> boardList = getBoardList(gc, pm);
 

@@ -13,8 +13,9 @@ import com.example.chess.game.pieces.Piece;
 import java.util.Locale;
 
 public class GameController {
-    private final Board game;
-    private int[] selected = null;
+
+    protected Board game;
+    protected int[] selected = null;
 
     public static final int NOTHING_SELECTED = 0;
     public static final int PIECE_SELECTED = 1;

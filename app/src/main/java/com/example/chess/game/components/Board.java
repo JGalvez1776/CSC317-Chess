@@ -16,7 +16,7 @@ public class Board {
     private Player[] players = new Player[]{new Player(WHITE), new Player(BLACK)};
     private int currentPlayer = 0;
 
-    private static final String DEFAULT_BOARD = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR ";
+    private static final String DEFAULT_BOARD = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     private static HashMap<Character, Placeable> pieceMap;
     static {
         pieceMap = new HashMap<>();
@@ -35,11 +35,13 @@ public class Board {
     public Board(String initalPosition) {
         // Lowercase is black
         // "8/6p1/8/K6P/7P/kr5R/8/8 w - - 0 1"
+        // FEN (Forsyth-Edwards Notation)
+        // https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
         int row = HEIGHT - 1;
         int column = 0;
         int stringIndex = 0;
         char character = initalPosition.charAt(0);
-        while (character != ' ' && stringIndex < initalPosition.length()) {
+        while (character != ' ') {
             character = initalPosition.charAt(stringIndex);
             if (character == '/' || column >= WIDTH) {
                 row--;
@@ -54,6 +56,15 @@ public class Board {
             stringIndex++;
             column++;
         }
+
+        char player = initalPosition.charAt(stringIndex);
+        if (player == 'b') {
+            currentPlayer = 1;
+        } else {
+            currentPlayer = 0;
+        }
+
+        // TODO: Handle castling
     }
 
     public void move(int startX, int startY, int endX, int endY) {
