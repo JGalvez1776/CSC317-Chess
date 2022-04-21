@@ -1,17 +1,22 @@
 package com.example.chess;
 
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-public class HelpFragment extends Fragment implements View.OnClickListener {
+public class RulesFragment extends Fragment {
 
-    private static final int LAYOUT = R.layout.fragment_help;
+    private static final int LAYOUT = R.layout.fragment_rules;
 
     private AppCompatActivity containerActivity;
     private View inflatedView;
@@ -37,20 +42,13 @@ public class HelpFragment extends Fragment implements View.OnClickListener {
         // get inflated view
         inflatedView = inflater.inflate(LAYOUT, container, false);
 
-        inflatedView.findViewById(R.id.rules_button).setOnClickListener(this);
+        WebView webView = inflatedView.findViewById(R.id.web_view);
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setAppCacheEnabled(true);
+        webView.getSettings().setLoadsImagesAutomatically(true);
+        webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        webView.loadUrl("https://www.chess.com/learn-how-to-play-chess");
 
         return inflatedView;
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view.getId() != R.id.rules_button) return;
-        FragmentTransaction transaction = containerActivity.
-                getSupportFragmentManager().beginTransaction();
-        RulesFragment rf = new RulesFragment();
-        rf.setContainerActivity(containerActivity);
-        transaction.replace(R.id.container, rf);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 }

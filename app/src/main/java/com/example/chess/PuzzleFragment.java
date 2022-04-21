@@ -56,19 +56,15 @@ public class PuzzleFragment extends GameFragment {
         // TODO: implement undo button toggle
         inflatedView.findViewById(R.id.undo_button).setOnClickListener(this);
 
-<<<<<<< Updated upstream
         // update view to fit game mode
         ((TextView) inflatedView.findViewById(R.id.current_turn)).setText("");
 
-        // create the game controller
-        controller = setupBoard();
-=======
 
->>>>>>> Stashed changes
+
         pieceMap = createPieceMap();
 
 
-<<<<<<< Updated upstream
+
         // add listener for board squares
         GridView gridView = inflatedView.findViewById(R.id.board);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -79,10 +75,6 @@ public class PuzzleFragment extends GameFragment {
                 System.out.println(getX(position)+" "+getY(position));
             }
         });
-=======
-        // update view to fit game mode
-        ((TextView) inflatedView.findViewById(R.id.current_turn)).setText("");
->>>>>>> Stashed changes
 
         return inflatedView;
     }
