@@ -104,6 +104,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 switch (result) {
                     case GameController.NOTHING_SELECTED:
                         // TODO: Remove highlighted squares
+                        updateBoard(controller, pieceMap, inflatedView, containerActivity);
                         break;
                     case GameController.PIECE_SELECTED:
                         // highlights piece

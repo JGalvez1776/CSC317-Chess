@@ -1,6 +1,8 @@
 package com.example.chess.game.components;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.example.chess.game.pieces.Piece;
 import com.example.chess.game.pieces.Placeable;
@@ -30,6 +32,12 @@ public class Board {
 
     public Board() {
         this(DEFAULT_BOARD);
+    }
+
+    @Override
+    public String toString() {
+        // TODO: Convert to FEN notation (Format constructor use to make a Board)
+        return "NULL";
     }
 
     public Board(String initalPosition) {
@@ -74,7 +82,40 @@ public class Board {
         place(null, startX, startY);
         place(selected, endX, endY);
         currentPlayer = (currentPlayer + 1) % players.length;
+        selected.setMoved();
+    }
 
+    public List<int[]> getValidMoves(int x, int y) {
+        ArrayList<int[]> moves = new ArrayList<>();
+        Piece piece = getPiece(x, y);
+        if (piece == null)
+            return null;
+        List<Move> potentialMoves = piece.getPotentialMoves();
+        for (Move move : potentialMoves) {
+            int curX = x + move.getShiftX();
+            int curY = y + move.getShiftY();
+            boolean checkNext = true && canMoveTo(piece, curX, curY);
+            while (checkNext) {
+                moves.add(new int[]{curX, curY});
+                curX += move.getShiftX();
+                curY += move.getShiftY();
+                checkNext = move.isRepeatable() && canMoveTo(piece, curX, curY);
+            }
+        }
+
+        // TODO: Also make sure that moves do not put oneself into check!
+        // TODO: Add the special moves here!!!
+
+
+        return moves;
+    }
+
+
+    private boolean canMoveTo(Piece piece, int x, int y) {
+
+        return 0 <= x && x < WIDTH && 0 <= y && y < HEIGHT &&
+               (getPiece(x, y) == null ||
+                !getPiece(x, y).getPlayer().equals(piece.getPlayer()));
     }
 
     private void place(Piece piece, int x, int y) {

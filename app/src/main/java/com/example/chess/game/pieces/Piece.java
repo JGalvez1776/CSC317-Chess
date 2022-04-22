@@ -3,6 +3,9 @@ package com.example.chess.game.pieces;
 import com.example.chess.game.components.Move;
 import com.example.chess.game.components.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Piece {
     protected String name;
     protected Player owner;
@@ -19,10 +22,7 @@ public abstract class Piece {
     }
 
 
-    public Move[] getPotentialMoves() {
-        // TODO: Implement this
-        return null;
-    }
+    public abstract List<Move> getPotentialMoves();
 
     public String getName() {
         return owner + name;

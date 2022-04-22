@@ -8,8 +8,10 @@
 package com.example.chess.game;
 
 import com.example.chess.game.components.Board;
+import com.example.chess.game.components.Move;
 import com.example.chess.game.pieces.Piece;
 
+import java.util.List;
 import java.util.Locale;
 
 public class GameController {
@@ -71,23 +73,33 @@ public class GameController {
     public int select(int x, int y) {
         y = convertPosition(x, y)[1];
 
-        if (selected == null) {
-            // Selected the piece and returns if the pieces is real (Properly selected)
-            Piece selectedPiece = game.getPiece(x, y);
-
-            if (selectedPiece != null && selectedPiece.getPlayer().equals(game.getCurrentPlayer()))
-                    selected = new int[]{x, y};
-            return selected != null ? PIECE_SELECTED : NOTHING_SELECTED;
-        } else {
-            if (false) {
-                // TODO: Have unselect if piece is invalid
-                return NOTHING_SELECTED;
+        if (selected != null) {
+            List<int[]> potentialMoves = game.getValidMoves(selected[0], selected[1]);
+            if (potentialMoves != null && validMove(potentialMoves, x, y)) {
+                game.move(selected[0], selected[1], x, y);
+                selected = null;
+                return PIECE_MOVED;
             }
-            game.move(selected[0], selected[1], x, y);
             selected = null;
-            return PIECE_MOVED;
         }
+
+        // Selected the piece and returns if the pieces is real (Properly selected)
+        Piece selectedPiece = game.getPiece(x, y);
+        if (selectedPiece != null && selectedPiece.getPlayer().equals(game.getCurrentPlayer())) {
+            selected = new int[]{x, y};
+
+        }
+        return selected != null ? PIECE_SELECTED : NOTHING_SELECTED;
     }
+
+    private boolean validMove(List<int[]> moves, int x, int y) {
+        for (int[] position : moves) {
+            if (position[0] == x && position[1] == y)
+                return true;
+        }
+        return false;
+    }
+
 
     public String getCurrentPlayer() {
         return game.getCurrentPlayer().toString();
