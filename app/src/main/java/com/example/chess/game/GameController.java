@@ -57,10 +57,6 @@ public class GameController {
         
     }
 
-    public int[] getSelected() {
-        return selected;
-    }
-
     private int[] convertPosition(int x, int y) {
         return new int[] {x, Math.abs(Board.HEIGHT - y - 1)};
     }

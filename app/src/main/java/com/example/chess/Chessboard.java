@@ -1,5 +1,8 @@
 package com.example.chess;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
@@ -18,13 +21,15 @@ import java.util.HashMap;
 public class Chessboard {
     // board ui
     View[][][] drawnBoard = new View[8][8][2];
+    int[] selected = new int[2];
 
     protected AppCompatActivity containerActivity;
     protected View inflatedView;
     protected GameController controller;
     protected HashMap<String,Integer> pieceMap;
 
-    int squareSize; int colorDark; int colorLight; int colorHighlight;
+    int squareSize; int animSpeed;
+    int colorDark; int colorLight; int colorHighlight;
 
     public Chessboard(AppCompatActivity containerActivity, View inflatedView, GameController controller) {
         this.containerActivity = containerActivity;
@@ -35,6 +40,7 @@ public class Chessboard {
         colorLight = containerActivity.getResources().getColor(R.color.white);
         colorHighlight = containerActivity.getResources().getColor(R.color.yellow);
         pieceMap = createPieceMap();
+        animSpeed = 1000;
     }
 
     public void drawBoard() {
@@ -95,19 +101,59 @@ public class Chessboard {
 
                 switch (result) {
                     case GameController.NOTHING_SELECTED:
+                        setHighlight(selected[0],selected[1],false);
                         break;
                     case GameController.PIECE_SELECTED:
-                        updateBoard();
-                        square[1].setBackgroundColor(colorHighlight);
+                        setHighlight(selected[0],selected[1],false);
+                        selected[0] = x; selected[1] = y;
+                        setHighlight(selected[0],selected[1],true);
                         break;
                     case GameController.PIECE_MOVED:
 
                         // TODO: Handle game logistics (Check, game over, update turn string)
-                        updateBoard();
+                        animatePiece(selected[0],selected[1],x,y);
                         break;
                 }
             }
         });
+    }
+
+    private void animatePiece(int startX, int startY, int endX, int endY) {
+        View piece = drawnBoard[startX][startY][0];
+        piece.bringToFront();
+        int dist = squareSize;
+        int moveX = endX-startX;
+        int moveY = endY-startY;
+
+        PropertyValuesHolder pX = PropertyValuesHolder.ofFloat("translationX",
+                piece.getTranslationX()+(moveX*(squareSize)));
+        PropertyValuesHolder pY = PropertyValuesHolder.ofFloat("translationY",
+                piece.getTranslationY()+(moveY*squareSize));
+        ObjectAnimator pieceMove = ObjectAnimator.ofPropertyValuesHolder(piece,pX,pY);
+        pieceMove.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {}
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // updates board
+                updateBoard();
+            }
+            @Override
+            public void onAnimationCancel(Animator animation) {}
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+        });
+        pieceMove.setDuration(animSpeed);
+        pieceMove.start();
+    }
+
+    public void setHighlight(int x, int y, boolean highlight) {
+        View cell = drawnBoard[x][y][1];
+        if (highlight) {
+            cell.setBackgroundColor(colorHighlight);
+        } else {
+            cell.setBackgroundColor(getCellColor(x,y));
+        }
     }
 
     public void updateBoard() {
