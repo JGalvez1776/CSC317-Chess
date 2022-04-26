@@ -84,7 +84,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         // create the game controller
         controller = getController();
         pieceMap = createPieceMap();
-        drawBoard();
+        chessboard = new Chessboard(containerActivity, inflatedView, controller);
+        chessboard.drawBoard();
         //updateBoard(controller, pieceMap, inflatedView, containerActivity);
         //addListeners();
 
