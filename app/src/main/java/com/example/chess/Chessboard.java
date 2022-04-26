@@ -95,7 +95,6 @@ public class Chessboard {
 
                 switch (result) {
                     case GameController.NOTHING_SELECTED:
-                        updateBoard();
                         break;
                     case GameController.PIECE_SELECTED:
                         updateBoard();
