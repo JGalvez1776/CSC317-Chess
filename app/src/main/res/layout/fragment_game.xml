@@ -42,16 +42,17 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <GridView
+    <LinearLayout
         android:id="@+id/board"
         android:layout_width="@dimen/cell_size"
         android:layout_height="@dimen/cell_size"
-        android:numColumns="8"
+        android:orientation="vertical"
         android:layout_gravity="center"
         app:layout_constraintTop_toBottomOf="@id/current_turn"
         app:layout_constraintBottom_toBottomOf="@id/board_bottom"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent" >
+    </LinearLayout>
 
     <TextView
         style="@style/AltButton"

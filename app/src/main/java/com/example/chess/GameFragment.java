@@ -15,8 +15,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -39,13 +41,15 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     protected GameController controller;
     protected HashMap<String,Integer> pieceMap;
 
-
     // for animation
     protected ImageView selectedPiece;
     // 0 = drawable id, 1 = x, 2 = y
     protected int selectedPieceVals[] = new int[3];
     // 0 = ui x, 1 = ui y
     protected int selectedPiecePos[] = new int[2];
+
+    // board ui
+    View[][][] drawnBoard = new View[8][8][2];
 
     /**
      * Sets container activity.
@@ -79,8 +83,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         // create the game controller
         controller = setupBoard();
         pieceMap = createPieceMap();
-        updateBoard(controller, pieceMap, inflatedView, containerActivity);
-        addListeners();
+        drawBoard();
+        //updateBoard(controller, pieceMap, inflatedView, containerActivity);
+        //addListeners();
 
         return inflatedView;
     }
@@ -172,7 +177,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         pieceMove.start();
     }
 
-
     /**
      * Creates a map of piece strings to their respective drawable ids.
      * @return Map of pieces.
@@ -195,6 +199,42 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     public GameController setupBoard() {
         // TODO: implement save/load
         return new GameController();
+    }
+
+    public void drawBoard() {
+        LinearLayout ll = inflatedView.findViewById(R.id.board);
+
+        for (int i = 0; i < 8; i++) {
+            LinearLayout row = new LinearLayout(containerActivity);
+            LinearLayout.LayoutParams rp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            row.setLayoutParams(rp);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            ll.addView(row);
+            for (int j = 0; j < 8; j++) {
+                FrameLayout fl = new FrameLayout(containerActivity);
+                View square[] = new View[2];
+                ImageView piece = new ImageView(containerActivity);
+                piece.setImageResource(R.drawable.blackking);
+                TextView cell = new TextView(containerActivity);
+                LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
+                        (int) getResources().getDimension(R.dimen.square_size),
+                        (int) getResources().getDimension(R.dimen.square_size));
+                cell.setLayoutParams(p);
+                piece.setLayoutParams(p);
+                if ((j%2 != 0 && i%2 == 0) || (j%2 == 0 && i%2 != 0))
+                    cell.setBackgroundColor(getResources().getColor(R.color.gray));
+                else cell.setBackgroundColor(getResources().getColor(R.color.white));
+                square[0] = piece;
+                square[1] = cell;
+                fl.addView(cell);
+                fl.addView(piece);
+                row.addView(fl);
+            }
+        }
+
+
     }
 
     /**
