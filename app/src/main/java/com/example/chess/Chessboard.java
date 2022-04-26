@@ -3,13 +3,10 @@ package com.example.chess;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -17,7 +14,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.chess.R;
 import com.example.chess.game.GameController;
 
 import java.util.HashMap;
@@ -39,20 +35,19 @@ public class Chessboard {
         this.containerActivity = containerActivity;
         this.inflatedView = inflatedView;
         this.controller = controller;
+
         squareSize = Math.min(getWidthInPixels(),getHeightInPixels())/8;
         colorDark = containerActivity.getResources().getColor(R.color.gray);
         colorLight = containerActivity.getResources().getColor(R.color.white);
         colorHighlight = containerActivity.getResources().getColor(R.color.yellow);
+
         pieceMap = createPieceMap();
-        animSpeed = 1000;
+        animSpeed = 500;
     }
 
     public void drawBoard() {
         RelativeLayout rl = inflatedView.findViewById(R.id.board);
-        System.out.println(squareSize);
-        System.out.println(squareSize*8);
-
-        FrameLayout fls[][] = new FrameLayout[8][8];
+        FrameLayout[][] fls = new FrameLayout[8][8];
 
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
@@ -101,28 +96,23 @@ public class Chessboard {
     }
 
     protected void setListener(View view, int x, int y) {
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                View square[] = drawnBoard[x][y];
-                String name = controller.getPieceName(x, y);
-                int result = controller.select(x, y);
+        view.setOnClickListener(v -> {
+            int result = controller.select(x, y);
 
-                switch (result) {
-                    case GameController.NOTHING_SELECTED:
-                        setHighlight(selected[0],selected[1],false);
-                        break;
-                    case GameController.PIECE_SELECTED:
-                        setHighlight(selected[0],selected[1],false);
-                        selected[0] = x; selected[1] = y;
-                        setHighlight(selected[0],selected[1],true);
-                        break;
-                    case GameController.PIECE_MOVED:
+            switch (result) {
+                case GameController.NOTHING_SELECTED:
+                    setHighlight(selected[0],selected[1],false);
+                    break;
+                case GameController.PIECE_SELECTED:
+                    setHighlight(selected[0],selected[1],false);
+                    selected[0] = x; selected[1] = y;
+                    setHighlight(selected[0],selected[1],true);
+                    break;
+                case GameController.PIECE_MOVED:
 
-                        // TODO: Handle game logistics (Check, game over, update turn string)
-                        animatePiece(selected[0],selected[1],x,y);
-                        break;
-                }
+                    // TODO: Handle game logistics (Check, game over, update turn string)
+                    animatePiece(selected[0],selected[1],x,y);
+                    break;
             }
         });
     }
@@ -131,7 +121,6 @@ public class Chessboard {
         View piece = drawnBoard[startX][startY][0];
         FrameLayout fl = (FrameLayout) piece.getParent();
         fl.bringToFront();
-        int dist = squareSize;
         int moveX = endX-startX;
         int moveY = endY-startY;
 
@@ -195,7 +184,7 @@ public class Chessboard {
      * @return Map of pieces.
      */
     public HashMap<String,Integer> createPieceMap() {
-        HashMap<String,Integer> pMap = new HashMap<String,Integer>();
+        HashMap<String,Integer> pMap = new HashMap<>();
         pMap.put("blackbishop",R.drawable.blackbishop); pMap.put("whitebishop",R.drawable.whitebishop);
         pMap.put("blackking",R.drawable.blackking); pMap.put("whiteking",R.drawable.whiteking);
         pMap.put("blackknight",R.drawable.blackknight); pMap.put("whiteknight",R.drawable.whiteknight);
