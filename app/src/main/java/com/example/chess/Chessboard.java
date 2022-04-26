@@ -40,7 +40,6 @@ public class Chessboard {
         this.inflatedView = inflatedView;
         this.controller = controller;
         squareSize = Math.min(getWidthInPixels(),getHeightInPixels())/8;
-                //(int) containerActivity.getResources().getDimension(R.dimen.square_size);
         colorDark = containerActivity.getResources().getColor(R.color.gray);
         colorLight = containerActivity.getResources().getColor(R.color.white);
         colorHighlight = containerActivity.getResources().getColor(R.color.yellow);
