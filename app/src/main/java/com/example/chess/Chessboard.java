@@ -3,6 +3,8 @@ package com.example.chess;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -37,7 +39,8 @@ public class Chessboard {
         this.containerActivity = containerActivity;
         this.inflatedView = inflatedView;
         this.controller = controller;
-        squareSize = (int) containerActivity.getResources().getDimension(R.dimen.square_size);
+        squareSize = Math.min(getWidthInPixels(),getHeightInPixels())/8;
+                //(int) containerActivity.getResources().getDimension(R.dimen.square_size);
         colorDark = containerActivity.getResources().getColor(R.color.gray);
         colorLight = containerActivity.getResources().getColor(R.color.white);
         colorHighlight = containerActivity.getResources().getColor(R.color.yellow);
@@ -47,6 +50,8 @@ public class Chessboard {
 
     public void drawBoard() {
         RelativeLayout rl = inflatedView.findViewById(R.id.board);
+        System.out.println(squareSize);
+        System.out.println(squareSize*8);
 
         FrameLayout fls[][] = new FrameLayout[8][8];
 
@@ -199,6 +204,18 @@ public class Chessboard {
         pMap.put("blackqueen",R.drawable.blackqueen); pMap.put("whitequeen",R.drawable.whitequeen);
         pMap.put("blackrook",R.drawable.blackrook); pMap.put("whiterook",R.drawable.whiterook);
         return pMap;
+    }
+
+    protected int getHeightInPixels() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        containerActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.heightPixels;
+    }
+
+    protected int getWidthInPixels() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        containerActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.widthPixels;
     }
 
 }
