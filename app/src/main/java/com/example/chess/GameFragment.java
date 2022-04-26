@@ -204,7 +204,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     public void drawBoard() {
         LinearLayout ll = inflatedView.findViewById(R.id.board);
 
-        for (int i = 0; i < 8; i++) {
+        for (int x = 0; x < 8; x++) {
+            // create row
             LinearLayout row = new LinearLayout(containerActivity);
             LinearLayout.LayoutParams rp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -212,29 +213,47 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             row.setLayoutParams(rp);
             row.setOrientation(LinearLayout.HORIZONTAL);
             ll.addView(row);
-            for (int j = 0; j < 8; j++) {
+
+            for (int y = 0; y < 8; y++) {
+                // create frame layout
                 FrameLayout fl = new FrameLayout(containerActivity);
-                View square[] = new View[2];
+
+                // create piece view
                 ImageView piece = new ImageView(containerActivity);
-                piece.setImageResource(R.drawable.blackking);
+
+                // create cell view
                 TextView cell = new TextView(containerActivity);
                 LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
                         (int) getResources().getDimension(R.dimen.square_size),
                         (int) getResources().getDimension(R.dimen.square_size));
                 cell.setLayoutParams(p);
                 piece.setLayoutParams(p);
-                if ((j%2 != 0 && i%2 == 0) || (j%2 == 0 && i%2 != 0))
+
+                // set cell color
+                if ((y%2 != 0 && x%2 == 0) || (y%2 == 0 && x%2 != 0))
                     cell.setBackgroundColor(getResources().getColor(R.color.gray));
                 else cell.setBackgroundColor(getResources().getColor(R.color.white));
-                square[0] = piece;
-                square[1] = cell;
+
+                // add to frame layout, row, and drawnBoard
                 fl.addView(cell);
                 fl.addView(piece);
                 row.addView(fl);
+                drawnBoard[y][x] = new View[]{piece, cell};
             }
         }
+        updateBoard();
+    }
 
-
+    public void updateBoard() {
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                ImageView piece = (ImageView) drawnBoard[y][x][0];
+                String pieceName = controller.getPieceName(y,x);
+                if (pieceName != null) {
+                    piece.setImageResource(pieceMap.get(pieceName));
+                }
+            }
+        }
     }
 
     /**
