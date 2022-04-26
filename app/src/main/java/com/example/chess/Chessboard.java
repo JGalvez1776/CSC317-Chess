@@ -167,9 +167,10 @@ public class Chessboard {
                     piece.setImageResource(pieceMap.get(pieceName));
                 } else piece.setImageResource(R.color.transparent);
 
-                // clear highlight
-                TextView cell = (TextView) drawnBoard[x][y][1];
-                cell.setBackgroundColor(getCellColor(x,y));
+                TextView playerText = inflatedView.findViewById(R.id.current_turn);
+                String player = controller.getCurrentPlayer();
+                int playerStringId = player.equals(GameController.WHITE) ? R.string.white_turn : R.string.black_turn;
+                playerText.setText(playerStringId);
             }
         }
     }
