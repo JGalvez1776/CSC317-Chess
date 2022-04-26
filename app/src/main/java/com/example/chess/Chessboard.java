@@ -161,6 +161,7 @@ public class Chessboard {
             for (int y = 0; y < 8; y++) {
                 // set piece at location
                 ImageView piece = (ImageView) drawnBoard[x][y][0];
+                piece.animate().translationX(0).translationY(0);
                 String pieceName = controller.getPieceName(x,y);
                 if (pieceName != null) {
                     piece.setImageResource(pieceMap.get(pieceName));
