@@ -78,13 +78,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <ImageView
-        android:id="@+id/piece_clone"
-        android:layout_width="@dimen/square_size"
-        android:layout_height="@dimen/square_size"
-        android:src="@color/transparent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

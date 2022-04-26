@@ -22,10 +22,10 @@ public class PuzzleFragment extends GameFragment {
 
     private static final int LAYOUT = R.layout.fragment_game;
 
-    //private AppCompatActivity containerActivity;
-    //private View inflatedView;
-    //private GameController controller;
-    //private HashMap<String,Integer> pieceMap;
+    protected AppCompatActivity containerActivity;
+    protected View inflatedView;
+    protected GameController controller;
+    protected Chessboard chessboard;
 
     /**
      * Sets container activity.
@@ -46,7 +46,6 @@ public class PuzzleFragment extends GameFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // create the game controller
-        //controller = setupBoard();
         new FetchPuzzle().execute(PuzzleGameController.DAILY_PUZZLE_URL);
 
 
@@ -57,31 +56,9 @@ public class PuzzleFragment extends GameFragment {
         inflatedView.findViewById(R.id.undo_button).setOnClickListener(this);
 
         // update view to fit game mode
-        ((TextView) inflatedView.findViewById(R.id.current_turn)).setText("");
-
-
-
-        pieceMap = createPieceMap();
-
-
-
-        // add listener for board squares
-        GridView gridView = inflatedView.findViewById(R.id.board);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                // TODO: click on board square functionality
-                System.out.println(getX(position)+" "+getY(position));
-            }
-        });
+        ((TextView) inflatedView.findViewById(R.id.current_turn)).setAlpha(0.0F);
 
         return inflatedView;
-    }
-
-    @Override
-    public GameController getController() {
-        return null;
     }
 
     /**
@@ -100,20 +77,6 @@ public class PuzzleFragment extends GameFragment {
         }
     }
 
-    @Override
-    public void updateBoard(GameController gc, HashMap<String,Integer> pm, View inflatedView, AppCompatActivity containerActivity) {
-        // set adapter and listener
-        GridView gridView = inflatedView.findViewById(R.id.board);
-        gridView.setAdapter(getAdapter(gc, pm, containerActivity));
-
-        // TODO: Might be able to use this TextView to display checkmate/check
-        // Sets correct player text
-        TextView playerText = inflatedView.findViewById(R.id.move_feedback);
-        String player = gc.getCurrentPlayer();
-        int playerStringId = player.equals(GameController.WHITE) ? R.string.white_turn : R.string.black_turn;
-        playerText.setText(getText(playerStringId));
-    }
-
     private class FetchPuzzle extends AsyncTask<String, Integer, GameController> {
 
         @Override
@@ -123,8 +86,8 @@ public class PuzzleFragment extends GameFragment {
 
         protected void onPostExecute(GameController result) {
             controller = result;
-            updateBoard(controller, pieceMap, inflatedView, containerActivity);
-            addListeners();
+            chessboard = new Chessboard(containerActivity, inflatedView, controller);
+            chessboard.drawBoard();
         }
     }
 
