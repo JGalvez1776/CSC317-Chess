@@ -4,11 +4,13 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,18 +46,11 @@ public class Chessboard {
     }
 
     public void drawBoard() {
-        LinearLayout ll = inflatedView.findViewById(R.id.board);
+        RelativeLayout rl = inflatedView.findViewById(R.id.board);
+
+        FrameLayout fls[][] = new FrameLayout[8][8];
 
         for (int x = 0; x < 8; x++) {
-            // create row
-            LinearLayout row = new LinearLayout(containerActivity);
-            LinearLayout.LayoutParams rp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            row.setLayoutParams(rp);
-            row.setOrientation(LinearLayout.VERTICAL);
-            ll.addView(row);
-
             for (int y = 0; y < 8; y++) {
                 // create frame layout
                 FrameLayout fl = new FrameLayout(containerActivity);
@@ -76,8 +71,20 @@ public class Chessboard {
                 // add to frame layout, row, and drawnBoard
                 fl.addView(cell);
                 fl.addView(piece);
-                row.addView(fl);
+                fl.setClipChildren(false);
+                fl.setId(View.generateViewId());
+                fls[x][y] = fl;
                 drawnBoard[x][y] = new View[]{piece, cell};
+
+                // add frame layout to relative layout
+                if (x == 0 && y == 0) rl.addView(fl);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(squareSize, squareSize);
+                if (x > 0) lp.addRule(RelativeLayout.RIGHT_OF, fls[x-1][y].getId());
+                if (y > 0) lp.addRule(RelativeLayout.BELOW, fls[x][y-1].getId());
+                if(fl.getParent() != null) {
+                    ((ViewGroup)fl.getParent()).removeView(fl);
+                }
+                rl.addView(fl, lp);
             }
         }
         updateBoard();
@@ -93,10 +100,8 @@ public class Chessboard {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(x+" "+y);
                 View square[] = drawnBoard[x][y];
                 String name = controller.getPieceName(x, y);
-                System.out.println(name);
                 int result = controller.select(x, y);
 
                 switch (result) {
@@ -120,7 +125,8 @@ public class Chessboard {
 
     private void animatePiece(int startX, int startY, int endX, int endY) {
         View piece = drawnBoard[startX][startY][0];
-        piece.bringToFront();
+        FrameLayout fl = (FrameLayout) piece.getParent();
+        fl.bringToFront();
         int dist = squareSize;
         int moveX = endX-startX;
         int moveY = endY-startY;
@@ -132,7 +138,8 @@ public class Chessboard {
         ObjectAnimator pieceMove = ObjectAnimator.ofPropertyValuesHolder(piece,pX,pY);
         pieceMove.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animation) {}
+            public void onAnimationStart(Animator animation) {
+            }
             @Override
             public void onAnimationEnd(Animator animation) {
                 // updates board
@@ -167,10 +174,14 @@ public class Chessboard {
                     piece.setImageResource(pieceMap.get(pieceName));
                 } else piece.setImageResource(R.color.transparent);
 
+                // set current turn
                 TextView playerText = inflatedView.findViewById(R.id.current_turn);
                 String player = controller.getCurrentPlayer();
                 int playerStringId = player.equals(GameController.WHITE) ? R.string.white_turn : R.string.black_turn;
                 playerText.setText(playerStringId);
+
+                // clear highlight
+                drawnBoard[x][y][1].setBackgroundColor(getCellColor(x,y));
             }
         }
     }
