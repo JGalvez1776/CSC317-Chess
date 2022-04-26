@@ -80,7 +80,7 @@ public class PuzzleFragment extends GameFragment {
     }
 
     @Override
-    public GameController setupBoard() {
+    public GameController getController() {
         return null;
     }
 

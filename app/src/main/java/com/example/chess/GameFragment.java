@@ -40,6 +40,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     protected View inflatedView;
     protected GameController controller;
     protected HashMap<String,Integer> pieceMap;
+    protected Chessboard chessboard;
 
     // for animation
     protected ImageView selectedPiece;
@@ -81,7 +82,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         ((TextView) inflatedView.findViewById(R.id.move_feedback)).setText("");
 
         // create the game controller
-        controller = setupBoard();
+        controller = getController();
         pieceMap = createPieceMap();
         drawBoard();
         //updateBoard(controller, pieceMap, inflatedView, containerActivity);
@@ -196,7 +197,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * Returns a controller with the appropriate starting board.
      * @return Game controller.
      */
-    public GameController setupBoard() {
+    public GameController getController() {
         // TODO: implement save/load
         return new GameController();
     }
