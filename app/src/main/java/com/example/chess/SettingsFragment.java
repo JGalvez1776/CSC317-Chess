@@ -1,5 +1,7 @@
 package com.example.chess;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,20 +45,19 @@ public class SettingsFragment extends Fragment {
         {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                SharedPreferences sharedPref = containerActivity.getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
                 switch (checkedId) {
                     case R.id.theme1_selection:
-                        System.out.println("theme1");
-                        break;
+                        editor.putInt("theme",1); break;
                     case R.id.theme2_selection:
-                        System.out.println("theme2");
-                        break;
+                        editor.putInt("theme",2); break;
                     case R.id.theme3_selection:
-                        System.out.println("theme3");
-                        break;
+                        editor.putInt("theme",3); break;
                     case R.id.theme4_selection:
-                        System.out.println("theme4");
-                        break;
+                        editor.putInt("theme",4); break;
                 }
+                editor.apply();
             }
         });
 

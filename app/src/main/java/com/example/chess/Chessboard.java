@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -37,12 +38,21 @@ public class Chessboard {
         this.controller = controller;
 
         squareSize = Math.min(getWidthInPixels(),getHeightInPixels())/8;
-        colorDark = containerActivity.getResources().getColor(R.color.gray);
-        colorLight = containerActivity.getResources().getColor(R.color.white);
-        colorHighlight = containerActivity.getResources().getColor(R.color.yellow);
+
+        colorDark = getThemeColor("colorPrimary");
+        colorLight = getThemeColor("colorSecondary");
+        colorHighlight = getThemeColor("colorTertiary");;
 
         pieceMap = createPieceMap();
         animSpeed = 500;
+    }
+
+    public int getThemeColor(String name){
+        TypedValue outValue = new TypedValue();
+        int colorAttr = containerActivity.getResources().getIdentifier
+                (name, "attr", containerActivity.getPackageName());
+        containerActivity.getTheme().resolveAttribute(colorAttr, outValue, true);
+        return outValue.data;
     }
 
     public void drawBoard() {

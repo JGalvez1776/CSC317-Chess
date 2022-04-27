@@ -9,7 +9,6 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,11 +16,17 @@ public class MainActivity extends AppCompatActivity {
 
         // get preferences
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt("test",1);
-        editor.apply();
-
-        System.out.println(sharedPref.getInt("test", 0));
+        switch (sharedPref.getInt("theme", 1)) {
+            case 1:
+                setTheme(R.style.Theme_Classic); break;
+            case 2:
+                setTheme(R.style.Theme_Wooden); break;
+            case 3:
+                setTheme(R.style.Theme_Olive); break;
+            case 4:
+                setTheme(R.style.Theme_Night); break;
+        }
+        System.out.println(sharedPref.getInt("theme", 1));
 
         // create and display menu fragment
         MenuFragment mf = new MenuFragment();
