@@ -12,11 +12,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
         // get preferences
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         setTheme(sharedPref.getInt("theme", R.style.Theme_Classic));
+        setContentView(R.layout.activity_main);
 
         // create and display menu fragment
         MenuFragment mf = new MenuFragment();

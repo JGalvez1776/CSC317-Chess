@@ -3,6 +3,7 @@ package com.example.chess;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.content.res.ColorStateList;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
@@ -14,6 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.ImageViewCompat;
 
 import com.example.chess.game.GameController;
 
@@ -67,6 +70,9 @@ public class Chessboard {
 
                 // create piece view
                 ImageView piece = new ImageView(containerActivity);
+                piece.setImageTintMode(android.graphics.PorterDuff.Mode.MULTIPLY);
+                ImageViewCompat.setImageTintList
+                        (piece, ColorStateList.valueOf(getThemeColor("colorSecondary")));
 
                 // create cell view
                 TextView cell = new TextView(containerActivity);
@@ -158,7 +164,7 @@ public class Chessboard {
     }
 
     public void setHighlight(int x, int y, boolean highlight) {
-        View cell = drawnBoard[x][y][1];
+        TextView cell = (TextView) drawnBoard[x][y][1];
         if (highlight) {
             cell.setBackgroundColor(colorHighlight);
         } else {

@@ -5,7 +5,7 @@
         <item name="colorPrimary">@color/gray</item>
         <item name="colorSecondary">@color/white</item>
         <item name="colorTertiary">@color/yellow</item>
-        <item name="colorAccent">@color/gray</item>
+        <item name="colorAccent">@color/black</item>
         <!-- Status bar color -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
     </style>
@@ -16,7 +16,7 @@
         <item name="colorPrimary">@color/dark_wood</item>
         <item name="colorSecondary">@color/light_wood</item>
         <item name="colorTertiary">@color/yellow</item>
-        <item name="colorAccent">@color/gray</item>
+        <item name="colorAccent">@color/black</item>
         <!-- Status bar color -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
     </style>
@@ -27,7 +27,7 @@
         <item name="colorPrimary">@color/dark_olive</item>
         <item name="colorSecondary">@color/light_olive</item>
         <item name="colorTertiary">@color/yellow</item>
-        <item name="colorAccent">@color/gray</item>
+        <item name="colorAccent">@color/black</item>
         <!-- Status bar color -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
     </style>
@@ -38,7 +38,7 @@
         <item name="colorPrimary">@color/dark_night</item>
         <item name="colorSecondary">@color/light_night</item>
         <item name="colorTertiary">@color/yellow</item>
-        <item name="colorAccent">@color/gray</item>
+        <item name="colorAccent">@color/black</item>
         <!-- Status bar color -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
     </style>

@@ -3,13 +3,16 @@ package com.example.chess;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -17,7 +20,7 @@ public class SettingsFragment extends Fragment {
 
     private static final int LAYOUT = R.layout.fragment_settings;
 
-    private AppCompatActivity containerActivity;
+    static AppCompatActivity containerActivity;
     private View inflatedView;
 
     /**
@@ -38,6 +41,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        System.out.println("oncreateview");
         // get inflated view
         inflatedView = inflater.inflate(LAYOUT, container, false);
 
@@ -76,10 +80,20 @@ public class SettingsFragment extends Fragment {
                 }
                 editor.apply();
                 containerActivity.setTheme(sharedPref.getInt("theme", R.style.Theme_Classic));
+                ConstraintLayout cl = containerActivity.findViewById(R.id.container);
+                cl.setBackgroundColor(getThemeColor("colorSecondary"));
             }
         });
 
         return inflatedView;
+    }
+
+    public int getThemeColor(String name){
+        TypedValue outValue = new TypedValue();
+        int colorAttr = containerActivity.getResources().getIdentifier
+                (name, "attr", containerActivity.getPackageName());
+        containerActivity.getTheme().resolveAttribute(colorAttr, outValue, true);
+        return outValue.data;
     }
 
     // TODO: listeners for radio/switches
