@@ -3,6 +3,8 @@ package com.example.chess;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -125,9 +127,11 @@ public class Chessboard {
                     setHighlight(selected[0],selected[1],true);
                     break;
                 case GameController.PIECE_MOVED:
-
+                    SharedPreferences sharedPref = containerActivity.getPreferences(Context.MODE_PRIVATE);
                     // TODO: Handle game logistics (Check, game over, update turn string)
-                    animatePiece(selected[0],selected[1],x,y);
+                    if (sharedPref.getInt("animate",1) == 1) {
+                        animatePiece(selected[0],selected[1],x,y);
+                    } else updateBoard();
                     break;
             }
         });
