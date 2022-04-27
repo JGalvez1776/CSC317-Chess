@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -65,8 +67,11 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         inflatedView = inflater.inflate(LAYOUT, container, false);
 
         // setup buttons
-        // TODO: implement undo button toggle
-        inflatedView.findViewById(R.id.undo_button).setOnClickListener(this);
+        TextView undoButton = inflatedView.findViewById(R.id.undo_button);
+        SharedPreferences sharedPref = containerActivity.getPreferences(Context.MODE_PRIVATE);
+        if (sharedPref.getInt("undo",1) == 1) {
+            undoButton.setOnClickListener(this);
+        } else undoButton.setAlpha(0.0F);
 
         // update view to fit game mode
         ((TextView) inflatedView.findViewById(R.id.attempts_count)).setText("");
