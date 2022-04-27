@@ -16,17 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
         // get preferences
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        switch (sharedPref.getInt("theme", 1)) {
-            case 1:
-                setTheme(R.style.Theme_Classic); break;
-            case 2:
-                setTheme(R.style.Theme_Wooden); break;
-            case 3:
-                setTheme(R.style.Theme_Olive); break;
-            case 4:
-                setTheme(R.style.Theme_Night); break;
-        }
-        System.out.println(sharedPref.getInt("theme", 1));
+        setTheme(sharedPref.getInt("theme", R.style.Theme_Classic));
 
         // create and display menu fragment
         MenuFragment mf = new MenuFragment();

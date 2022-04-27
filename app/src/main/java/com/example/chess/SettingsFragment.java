@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,24 +41,41 @@ public class SettingsFragment extends Fragment {
         // get inflated view
         inflatedView = inflater.inflate(LAYOUT, container, false);
 
+        // setup theme selection radio group
         RadioGroup radioGroup = (RadioGroup) inflatedView.findViewById(R.id.theme_group);
+        SharedPreferences sharedPref = containerActivity.getPreferences(Context.MODE_PRIVATE);
+
+        switch (sharedPref.getInt("theme", R.style.Theme_Classic)) {
+            case R.style.Theme_Classic:
+                radioGroup.check(R.id.theme1_selection); break;
+            case R.style.Theme_Wooden:
+                radioGroup.check(R.id.theme2_selection); break;
+            case R.style.Theme_Olive:
+                radioGroup.check(R.id.theme3_selection); break;
+            case R.style.Theme_Night:
+                radioGroup.check(R.id.theme4_selection); break;
+        }
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                SharedPreferences sharedPref = containerActivity.getPreferences(Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 switch (checkedId) {
                     case R.id.theme1_selection:
-                        editor.putInt("theme",1); break;
+                        editor.putInt("theme",R.style.Theme_Classic);
+                        break;
                     case R.id.theme2_selection:
-                        editor.putInt("theme",2); break;
+                        editor.putInt("theme",R.style.Theme_Wooden);
+                        break;
                     case R.id.theme3_selection:
-                        editor.putInt("theme",3); break;
+                        editor.putInt("theme",R.style.Theme_Olive);
+                        break;
                     case R.id.theme4_selection:
-                        editor.putInt("theme",4); break;
+                        editor.putInt("theme",R.style.Theme_Night);
+                        break;
                 }
                 editor.apply();
+                containerActivity.setTheme(sharedPref.getInt("theme", R.style.Theme_Classic));
             }
         });
 
