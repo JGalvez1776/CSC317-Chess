@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -36,6 +37,28 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // get inflated view
         inflatedView = inflater.inflate(LAYOUT, container, false);
+
+        RadioGroup radioGroup = (RadioGroup) inflatedView.findViewById(R.id.theme_group);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.theme1_selection:
+                        System.out.println("theme1");
+                        break;
+                    case R.id.theme2_selection:
+                        System.out.println("theme2");
+                        break;
+                    case R.id.theme3_selection:
+                        System.out.println("theme3");
+                        break;
+                    case R.id.theme4_selection:
+                        System.out.println("theme4");
+                        break;
+                }
+            }
+        });
 
         return inflatedView;
     }
