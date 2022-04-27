@@ -7,11 +7,14 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Switch;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -41,14 +44,14 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        System.out.println("oncreateview");
-        // get inflated view
+
+        // get inflated view and shared prefs
         inflatedView = inflater.inflate(LAYOUT, container, false);
-
-        // setup theme selection radio group
-        RadioGroup radioGroup = (RadioGroup) inflatedView.findViewById(R.id.theme_group);
         SharedPreferences sharedPref = containerActivity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
 
+        // setup theme selection
+        RadioGroup radioGroup = (RadioGroup) inflatedView.findViewById(R.id.theme_group);
         switch (sharedPref.getInt("theme", R.style.Theme_Classic)) {
             case R.style.Theme_Classic:
                 radioGroup.check(R.id.theme1_selection); break;
@@ -63,7 +66,6 @@ public class SettingsFragment extends Fragment {
         {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                SharedPreferences.Editor editor = sharedPref.edit();
                 switch (checkedId) {
                     case R.id.theme1_selection:
                         editor.putInt("theme",R.style.Theme_Classic);
@@ -82,6 +84,34 @@ public class SettingsFragment extends Fragment {
                 containerActivity.setTheme(sharedPref.getInt("theme", R.style.Theme_Classic));
                 ConstraintLayout cl = containerActivity.findViewById(R.id.container);
                 cl.setBackgroundColor(getThemeColor("colorSecondary"));
+            }
+        });
+
+        // setup animation toggle
+        SwitchCompat animSwitch = inflatedView.findViewById(R.id.animation_switch);
+        if (sharedPref.getInt("animate",1) == 1) {
+            animSwitch.setChecked(true);
+        } else animSwitch.setChecked(false);
+        animSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    editor.putInt("animate",1);
+                } else editor.putInt("animate",0);
+                editor.apply();
+            }
+        });
+
+        // setup undo toggle
+        SwitchCompat undoSwitch = inflatedView.findViewById(R.id.undo_switch);
+        if (sharedPref.getInt("undo",1) == 1) {
+            undoSwitch.setChecked(true);
+        } else undoSwitch.setChecked(false);
+        undoSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    editor.putInt("undo",1);
+                } else editor.putInt("undo",0);
+                editor.apply();
             }
         });
 
