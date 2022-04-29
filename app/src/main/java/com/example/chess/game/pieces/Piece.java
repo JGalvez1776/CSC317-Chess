@@ -52,4 +52,15 @@ public abstract class Piece {
         return name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Piece)) return false;
+        Piece piece = (Piece) o;
+        if ((this.name.equals(piece.name))
+        && (this.owner.equals(piece.owner))) {
+            return true;
+        }
+        return false;
+    }
+
 }

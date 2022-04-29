@@ -110,6 +110,20 @@ public class Board {
         return moves;
     }
 
+    private boolean isCheck(int x, int y, String player) {
+        return false;
+    }
+
+    private int[] getPiecePosition(Piece piece) {
+        int[] pos = new int[2];
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+
+            }
+        }
+        return pos;
+    }
+
 
     private boolean canMoveTo(Piece piece, int x, int y) {
 

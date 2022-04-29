@@ -89,6 +89,7 @@ public class GameController {
             selected = new int[]{x, y};
 
         }
+
         return selected != null ? PIECE_SELECTED : NOTHING_SELECTED;
     }
 
