@@ -87,6 +87,19 @@ public class Board {
     }
 
     public List<int[]> getValidMoves(int x, int y) {
+        // get all places piece can move to
+        ArrayList<int[]> moves = getMoves(x,y);
+
+        // TODO: Also make sure that moves do not put oneself into check!
+        System.out.println(isCheck(getPiece(x,y).getPlayer()));
+
+        // TODO: Add the special moves here!!!
+
+
+        return moves;
+    }
+
+    private ArrayList<int[]> getMoves(int x, int y) {
         ArrayList<int[]> moves = new ArrayList<>();
         Piece piece = getPiece(x, y);
         if (piece == null)
@@ -96,6 +109,7 @@ public class Board {
             int curX = x + move.getShiftX();
             int curY = y + move.getShiftY();
             boolean checkNext = true && canMoveTo(piece, curX, curY);
+            // TODO bug that lets pieces jump over each other when they shouldn't be able to
             while (checkNext) {
                 moves.add(new int[]{curX, curY});
                 curX += move.getShiftX();
@@ -103,19 +117,65 @@ public class Board {
                 checkNext = move.isRepeatable() && canMoveTo(piece, curX, curY);
             }
         }
-
-        // TODO: Also make sure that moves do not put oneself into check!
-        // find king
-        System.out.println(Arrays.toString(getPiecePosition(new King(piece.getPlayer()))));
-
-        // TODO: Add the special moves here!!!
-
-
         return moves;
     }
 
-    private boolean isCheck(int x, int y, String player) {
+    private boolean isCheck(Player player) {
+        int[] pos = getPiecePosition(new King(player));
+        System.out.println(player+" "+pos[0]+" "+pos[1]);
+
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                // check if there is a piece and if they are opponent player
+                Piece p = getPiece(x,y);
+                if (p != null) {
+                    if (p.getPlayer().equals(otherPlayer(player))) {
+                        ArrayList<int[]> moves = getMoves(x,y);
+                        for (int[] m: moves) {
+                            if (m[0] == pos[0] && m[1] == pos[1])
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        /**
+        // check knight position
+        if ((checkPiece(pos[0]+1, pos[1]+2, new Knight(otherPlayer(player))))
+        || (checkPiece(pos[0]+1, pos[1]-2, new Knight(otherPlayer(player))))
+        || (checkPiece(pos[0]+2, pos[1]+1, new Knight(otherPlayer(player))))
+        || (checkPiece(pos[0]+2, pos[1]-1, new Knight(otherPlayer(player))))
+        || (checkPiece(pos[0]-1, pos[1]+2, new Knight(otherPlayer(player))))
+        || (checkPiece(pos[0]-1, pos[1]-2, new Knight(otherPlayer(player))))
+        || (checkPiece(pos[0]-2, pos[1]+1, new Knight(otherPlayer(player))))
+        || (checkPiece(pos[0]-2, pos[1]-1, new Knight(otherPlayer(player))))) {
+            return true;
+        }**/
+
         return false;
+    }
+
+    // check if a piece is at the spot
+    private boolean checkPiece(int x, int y, Piece piece) {
+        Piece check = getPiece(x, y);
+        if (check != null)
+            if (getPiece(x, y).equals(piece)) {
+                return true;
+            }
+        return false;
+    }
+
+    private Player otherPlayer(Player p) {
+        if (p.toString().equals(WHITE)) {
+            return players[1];
+        } else return players[0];
+    }
+
+    private boolean inBoard(int x, int y) {
+        if ((x < 0 || x >= 8)
+        || (y < 0 || y >= 8))
+            return false;
+        return true;
     }
 
     private int[] getPiecePosition(Piece piece) {
@@ -146,6 +206,7 @@ public class Board {
 
 
     public Piece getPiece(int x, int y) {
+        if (!inBoard(x,y)) return null;
         return board[y][x];
     }
 

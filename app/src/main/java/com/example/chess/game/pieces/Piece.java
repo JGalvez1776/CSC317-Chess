@@ -54,6 +54,7 @@ public abstract class Piece {
 
     @Override
     public boolean equals(Object o) {
+        if (o == null) return false;
         if (!(o instanceof Piece)) return false;
         Piece piece = (Piece) o;
         if ((this.name.equals(piece.name))
