@@ -1,6 +1,7 @@
 package com.example.chess.game.components;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -104,6 +105,9 @@ public class Board {
         }
 
         // TODO: Also make sure that moves do not put oneself into check!
+        // find king
+        System.out.println(Arrays.toString(getPiecePosition(new King(piece.getPlayer()))));
+
         // TODO: Add the special moves here!!!
 
 
@@ -115,13 +119,16 @@ public class Board {
     }
 
     private int[] getPiecePosition(Piece piece) {
-        int[] pos = new int[2];
+        int[] pos = new int[2]; // 0 = x, 1 = y
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
-
+                if (piece.equals(getPiece(x,y))) {
+                    pos[0] = x; pos[1] = y;
+                    return pos;
+                }
             }
         }
-        return pos;
+        return null;
     }
 
 
