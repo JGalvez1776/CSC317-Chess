@@ -57,6 +57,7 @@ public class PuzzleFragment extends GameFragment {
 
         // update view to fit game mode
         ((TextView) inflatedView.findViewById(R.id.current_turn)).setAlpha(0.0F);
+        ((TextView) inflatedView.findViewById(R.id.current_check)).setAlpha(0.0F);
 
         return inflatedView;
     }

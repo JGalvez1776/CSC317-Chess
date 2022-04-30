@@ -193,6 +193,12 @@ public class Chessboard {
                 int playerStringId = player.equals(GameController.WHITE) ? R.string.white_turn : R.string.black_turn;
                 playerText.setText(playerStringId);
 
+                // set current check
+                TextView checkText = inflatedView.findViewById(R.id.current_check);
+                String check = controller.getCurrentCheck();
+                if (check != null) checkText.setText(check+" is in check!");
+                else checkText.setText("");
+
                 // clear highlight
                 drawnBoard[x][y][1].setBackgroundColor(getCellColor(x,y));
             }

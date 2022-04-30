@@ -95,7 +95,6 @@ public class Board {
 
         // TODO: Add the special moves here!!!
 
-
         return moves;
     }
 
@@ -128,15 +127,16 @@ public class Board {
         return moves;
     }
 
-    private boolean isCheck(Player player) {
-        int[] pos = getPiecePosition(new King(player));
+    public boolean isCheck(String player) {
+        Player play = new Player(player);
+        int[] pos = getPiecePosition(new King(play));
 
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 // check if there is a piece and if they are opponent player
                 Piece p = getPiece(x,y);
                 if (p != null) {
-                    if (p.getPlayer().equals(otherPlayer(player))) {
+                    if (p.getPlayer().equals(otherPlayer(play))) {
                         ArrayList<int[]> moves = getMoves(x,y);
                         for (int[] m: moves) {
                             if (m[0] == pos[0] && m[1] == pos[1])
@@ -146,16 +146,6 @@ public class Board {
                 }
             }
         }
-        return false;
-    }
-
-    // check if a piece is at the spot
-    private boolean checkPiece(int x, int y, Piece piece) {
-        Piece check = getPiece(x, y);
-        if (check != null)
-            if (getPiece(x, y).equals(piece)) {
-                return true;
-            }
         return false;
     }
 

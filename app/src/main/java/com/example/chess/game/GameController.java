@@ -87,7 +87,6 @@ public class GameController {
         Piece selectedPiece = game.getPiece(x, y);
         if (selectedPiece != null && selectedPiece.getPlayer().equals(game.getCurrentPlayer())) {
             selected = new int[]{x, y};
-
         }
 
         return selected != null ? PIECE_SELECTED : NOTHING_SELECTED;
@@ -104,6 +103,16 @@ public class GameController {
 
     public String getCurrentPlayer() {
         return game.getCurrentPlayer().toString();
+    }
+
+    public String getCurrentCheck() {
+        if (game.isCheck(WHITE)) {
+            System.out.println("white is in check");
+            return WHITE;
+        } else if (game.isCheck(BLACK)) {
+            System.out.println("black is in check");
+            return BLACK;
+        } else return null;
     }
 
 }
