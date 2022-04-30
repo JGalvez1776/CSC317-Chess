@@ -108,13 +108,20 @@ public class Board {
         for (Move move : potentialMoves) {
             int curX = x + move.getShiftX();
             int curY = y + move.getShiftY();
-            boolean checkNext = true && canMoveTo(piece, curX, curY);
-            // TODO bug that lets pieces jump over each other when they shouldn't be able to
-            while (checkNext) {
+            boolean checkNext = canMoveTo(piece, curX, curY);
+            boolean blocked = false;
+            while (checkNext && !blocked) {
                 moves.add(new int[]{curX, curY});
                 curX += move.getShiftX();
                 curY += move.getShiftY();
                 checkNext = move.isRepeatable() && canMoveTo(piece, curX, curY);
+
+                // check if enemy piece is blocking the way
+                Piece curPiece = getPiece(curX,curY);
+                if (curPiece != null &&
+                otherPlayer(piece.getPlayer()).equals(getPiece(curX,curY).getPlayer())) {
+                    blocked = true;
+                }
             }
         }
         return moves;
@@ -139,19 +146,6 @@ public class Board {
                 }
             }
         }
-        /**
-        // check knight position
-        if ((checkPiece(pos[0]+1, pos[1]+2, new Knight(otherPlayer(player))))
-        || (checkPiece(pos[0]+1, pos[1]-2, new Knight(otherPlayer(player))))
-        || (checkPiece(pos[0]+2, pos[1]+1, new Knight(otherPlayer(player))))
-        || (checkPiece(pos[0]+2, pos[1]-1, new Knight(otherPlayer(player))))
-        || (checkPiece(pos[0]-1, pos[1]+2, new Knight(otherPlayer(player))))
-        || (checkPiece(pos[0]-1, pos[1]-2, new Knight(otherPlayer(player))))
-        || (checkPiece(pos[0]-2, pos[1]+1, new Knight(otherPlayer(player))))
-        || (checkPiece(pos[0]-2, pos[1]-1, new Knight(otherPlayer(player))))) {
-            return true;
-        }**/
-
         return false;
     }
 
