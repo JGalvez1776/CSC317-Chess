@@ -26,6 +26,7 @@ public class PuzzleFragment extends GameFragment {
     protected View inflatedView;
     protected GameController controller;
     protected Chessboard chessboard;
+    protected int attempts = 0;
 
     /**
      * Sets container activity.
@@ -60,6 +61,13 @@ public class PuzzleFragment extends GameFragment {
         return inflatedView;
     }
 
+    @Override
+    public void setupBoard() {
+        new FetchPuzzle().execute(PuzzleGameController.DAILY_PUZZLE_URL);
+        chessboard = new Chessboard(containerActivity, inflatedView, controller);
+        chessboard.drawBoard();
+    }
+
     /**
      * Holds on click functions for each button in the layout.
      * @param view view that was clicked
@@ -71,7 +79,9 @@ public class PuzzleFragment extends GameFragment {
 
         switch (view.getId()) {
             case R.id.undo_button:
-                // TODO: undo button functionality
+                setupBoard();
+                attempts++;
+                ((TextView) inflatedView.findViewById(R.id.attempts_count)).setText("Attempts: "+attempts);
                 break;
         }
     }
