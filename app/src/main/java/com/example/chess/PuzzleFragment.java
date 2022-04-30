@@ -48,15 +48,13 @@ public class PuzzleFragment extends GameFragment {
         // create the game controller
         new FetchPuzzle().execute(PuzzleGameController.DAILY_PUZZLE_URL);
 
-
         // get inflated view
         inflatedView = inflater.inflate(LAYOUT, container, false);
+
         // setup buttons
-        // TODO: implement undo button toggle
         inflatedView.findViewById(R.id.undo_button).setOnClickListener(this);
 
         // update view to fit game mode
-        ((TextView) inflatedView.findViewById(R.id.current_turn)).setAlpha(0.0F);
         ((TextView) inflatedView.findViewById(R.id.current_check)).setAlpha(0.0F);
 
         return inflatedView;

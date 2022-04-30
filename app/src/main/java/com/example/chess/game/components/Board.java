@@ -130,6 +130,7 @@ public class Board {
     public boolean isCheck(String player) {
         Player play = new Player(player);
         int[] pos = getPiecePosition(new King(play));
+        if (pos == null) return false;
 
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
