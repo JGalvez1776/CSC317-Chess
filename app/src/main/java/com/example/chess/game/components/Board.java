@@ -91,7 +91,7 @@ public class Board {
         ArrayList<int[]> moves = getMoves(x,y);
 
         // TODO: Also make sure that moves do not put oneself into check!
-        System.out.println(isCheck(getPiece(x,y).getPlayer()));
+        // System.out.println(isCheck(getPiece(x,y).getPlayer()));
 
         // TODO: Add the special moves here!!!
 
@@ -112,16 +112,17 @@ public class Board {
             boolean blocked = false;
             while (checkNext && !blocked) {
                 moves.add(new int[]{curX, curY});
-                curX += move.getShiftX();
-                curY += move.getShiftY();
-                checkNext = move.isRepeatable() && canMoveTo(piece, curX, curY);
 
                 // check if enemy piece is blocking the way
                 Piece curPiece = getPiece(curX,curY);
-                if (curPiece != null &&
-                otherPlayer(piece.getPlayer()).equals(getPiece(curX,curY).getPlayer())) {
-                    blocked = true;
-                }
+                if (curPiece != null)
+                    if (otherPlayer(piece.getPlayer()).equals(curPiece.getPlayer()))
+                        blocked = true;
+
+                // get next curX curY and checkNext
+                curX += move.getShiftX();
+                curY += move.getShiftY();
+                checkNext = move.isRepeatable() && canMoveTo(piece, curX, curY);
             }
         }
         return moves;
@@ -129,7 +130,6 @@ public class Board {
 
     private boolean isCheck(Player player) {
         int[] pos = getPiecePosition(new King(player));
-        System.out.println(player+" "+pos[0]+" "+pos[1]);
 
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
