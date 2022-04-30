@@ -74,15 +74,19 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         } else undoButton.setAlpha(0.0F);
 
         // update view to fit game mode
-        ((TextView) inflatedView.findViewById(R.id.attempts_count)).setText("");
-        ((TextView) inflatedView.findViewById(R.id.move_feedback)).setText("");
+        ((TextView) inflatedView.findViewById(R.id.attempts_count)).setAlpha(0.0F);
+        ((TextView) inflatedView.findViewById(R.id.move_feedback)).setAlpha(0.0F);
 
+        setupBoard();
+
+        return inflatedView;
+    }
+
+    public void setupBoard() {
         // create the game controller
         controller = getController();
         chessboard = new Chessboard(containerActivity, inflatedView, controller);
         chessboard.drawBoard();
-
-        return inflatedView;
     }
 
     /**
@@ -90,7 +94,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * @return Game controller.
      */
     public GameController getController() {
-        // TODO: implement save/load
         return new GameController();
     }
 
@@ -105,7 +108,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
         switch (view.getId()) {
             case R.id.undo_button:
-                // TODO: undo button functionality
+                setupBoard();
                 break;
         }
     }
