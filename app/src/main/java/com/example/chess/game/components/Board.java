@@ -209,7 +209,7 @@ public class Board {
         }
 
         // check for castling
-        if (piece instanceof King) {
+        if (piece instanceof King && !piece.hasMoved()) {
             if (piece.getPlayer().toString().equals(WHITE)) {
                 if (canCastle[1]) moves.add(new int[]{x - 2, y});
                 if (canCastle[0]) moves.add(new int[]{x + 2, y});
