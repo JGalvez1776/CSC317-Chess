@@ -91,7 +91,6 @@ public class PuzzleGameController extends GameController {
     }
 
     public void setComputerMove(Player player, String name, int x, int y) {
-        System.out.println("SETCOMPUTERMOVE "+player+" "+name+" "+x+" "+y);
         int[][] pieces = game.getPiecePosition(player, name);
         List<int[]> validMoves1 = game.getValidMoves(pieces[0][0],pieces[0][1]);
         List<int[]> validMoves2 = game.getValidMoves(pieces[1][0],pieces[1][1]);

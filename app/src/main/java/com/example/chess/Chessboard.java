@@ -140,7 +140,6 @@ public class Chessboard {
     }
 
     private void animatePiece(int startX, int startY, int endX, int endY, boolean comp) {
-        System.out.println("animation start "+startX+" "+startY+" to "+endX+" "+endY);
         ImageView piece = (ImageView) drawnBoard[startX][startY][0];
         FrameLayout fl = (FrameLayout) piece.getParent();
         fl.bringToFront();
@@ -159,12 +158,10 @@ public class Chessboard {
             @Override
             public void onAnimationEnd(Animator animation) {
                 // updates board
-                System.out.println("animation end");
                 updateBoard();
                 if (comp) {
                     if (controller instanceof PuzzleGameController) {
                         int[] compMove = ((PuzzleGameController) controller).doComputerMove();
-                        System.out.println(compMove[0]+" "+compMove[1]+" "+compMove[2]+" "+compMove[3]);
                         animatePiece(compMove[0],compMove[1],compMove[2],compMove[3],false);
                     }
                 }

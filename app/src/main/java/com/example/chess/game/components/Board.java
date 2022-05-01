@@ -79,6 +79,7 @@ public class Board {
     public void move(int startX, int startY, int endX, int endY) {
         Piece selected = getPiece(startX, startY);
         // TODO: Add in all the special moves / check for it here
+        // promotion
 
         place(null, startX, startY);
         place(selected, endX, endY);
