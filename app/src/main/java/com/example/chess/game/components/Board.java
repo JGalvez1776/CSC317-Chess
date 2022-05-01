@@ -79,10 +79,20 @@ public class Board {
     public void move(int startX, int startY, int endX, int endY) {
         Piece selected = getPiece(startX, startY);
         // TODO: Add in all the special moves / check for it here
-        // promotion
 
         place(null, startX, startY);
         place(selected, endX, endY);
+
+        // promotion
+        if (selected.toString().equals("Pawn")) {
+            System.out.println(endY);
+            if (selected.getPlayer().toString().equals(WHITE) && (endY >= 7)) {
+                selected = place(new Queen(players[currentPlayer]),endX,endY);
+            } else if (selected.getPlayer().toString().equals(BLACK) && (endY <= 0)) {
+                selected = place(new Queen(players[currentPlayer]),endX,endY);
+            }
+        }
+
         currentPlayer = (currentPlayer + 1) % players.length;
         selected.setMoved();
     }
@@ -92,8 +102,6 @@ public class Board {
         ArrayList<int[]> moves = getMoves(x,y);
 
         // TODO: Also make sure that moves do not put oneself into check!
-        // System.out.println(isCheck(getPiece(x,y).getPlayer()));
-
         // TODO: Add the special moves here!!!
 
         return moves;
@@ -199,8 +207,9 @@ public class Board {
                 !getPiece(x, y).getPlayer().equals(piece.getPlayer()));
     }
 
-    private void place(Piece piece, int x, int y) {
+    private Piece place(Piece piece, int x, int y) {
         board[y][x] = piece;
+        return board[y][x];
     }
 
     public Piece getPiece(int x, int y) {
