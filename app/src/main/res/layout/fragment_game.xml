@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.85" />
+        app:layout_constraintGuide_percent="0.83" />
 
     <TextView
         style="@style/Heading"
@@ -81,13 +81,26 @@
         />
 
     <TextView
-        style="@style/Heading"
+        style="@style/AltButton"
+        android:id="@+id/share_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/share"
+        android:padding="10dp"
+        app:layout_constraintTop_toTopOf="@id/board_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:gravity="center"
+        />
+
+    <TextView
+        style="@style/Body"
         android:id="@+id/attempts_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Attempts: 0"
         android:padding="10dp"
-        app:layout_constraintTop_toTopOf="@id/board_bottom"
+        app:layout_constraintTop_toBottomOf="@id/share_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 

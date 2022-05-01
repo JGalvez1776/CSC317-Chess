@@ -54,6 +54,7 @@ public class PuzzleFragment extends GameFragment {
 
         // setup buttons
         inflatedView.findViewById(R.id.undo_button).setOnClickListener(this);
+        inflatedView.findViewById(R.id.share_button).setOnClickListener(this);
 
         // update view to fit game mode
         ((TextView) inflatedView.findViewById(R.id.current_check)).setAlpha(0.0F);
@@ -74,14 +75,21 @@ public class PuzzleFragment extends GameFragment {
      */
     @Override
     public void onClick(View view) {
-        FragmentTransaction transaction = containerActivity.
-                getSupportFragmentManager().beginTransaction();
-
         switch (view.getId()) {
             case R.id.undo_button:
                 setupBoard();
                 attempts++;
                 ((TextView) inflatedView.findViewById(R.id.attempts_count)).setText("Attempts: "+attempts);
+                break;
+            case R.id.share_button:
+                FragmentTransaction transaction = containerActivity.
+                        getSupportFragmentManager().beginTransaction();
+                ShareFragment sf = new ShareFragment();
+                sf.setContainerActivity(containerActivity);
+                sf.setAttempts(attempts);
+                transaction.replace(R.id.container, sf);
+                transaction.addToBackStack(null);
+                transaction.commit();
                 break;
         }
     }

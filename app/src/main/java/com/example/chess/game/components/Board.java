@@ -88,12 +88,12 @@ public class Board {
             }
             stringIndex++;
         }
+        for (boolean b: canCastle) System.out.println(b);
     }
 
     public void move(int startX, int startY, int endX, int endY) {
         Piece selected = getPiece(startX, startY);
         Player player = selected.getPlayer();
-        // TODO: Add in all the special moves / check for it here
 
         place(null, startX, startY);
         place(selected, endX, endY);
@@ -211,11 +211,11 @@ public class Board {
         // check for castling
         if (piece instanceof King) {
             if (piece.getPlayer().toString().equals(WHITE)) {
-                if (canCastle[0]) moves.add(new int[]{x - 2, y});
-                if (canCastle[1]) moves.add(new int[]{x + 2, y});
+                if (canCastle[1]) moves.add(new int[]{x - 2, y});
+                if (canCastle[0]) moves.add(new int[]{x + 2, y});
             } else {
-                if (canCastle[2]) moves.add(new int[]{x - 2, y});
-                if (canCastle[3]) moves.add(new int[]{x + 2, y});
+                if (canCastle[3]) moves.add(new int[]{x - 2, y});
+                if (canCastle[2]) moves.add(new int[]{x + 2, y});
             }
         }
 

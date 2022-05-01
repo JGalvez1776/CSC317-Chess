@@ -129,6 +129,11 @@ public class PuzzleGameController extends GameController {
             }
             split[i] = split[i].replaceAll("\\.|x|\\+","");
 
+            if (split[i].equals("O-O-O")) {
+                split[i] = "Castle";
+                continue;
+            }
+
             // translate to move
             split[i] = currPlayer + " " + fenMap.get(split[i].charAt(0)) + " "
                     + posMap.get(split[i].charAt(1)) + " " + posMap.get(split[i].charAt(2));

@@ -53,6 +53,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         // update view to fit game mode
         ((TextView) inflatedView.findViewById(R.id.attempts_count)).setAlpha(0.0F);
         ((TextView) inflatedView.findViewById(R.id.move_feedback)).setAlpha(0.0F);
+        ((TextView) inflatedView.findViewById(R.id.share_button)).setAlpha(0.0F);
 
         setupBoard();
 
