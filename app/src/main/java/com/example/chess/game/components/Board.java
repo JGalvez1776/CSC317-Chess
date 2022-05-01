@@ -78,18 +78,31 @@ public class Board {
 
     public void move(int startX, int startY, int endX, int endY) {
         Piece selected = getPiece(startX, startY);
+        Player player = selected.getPlayer();
         // TODO: Add in all the special moves / check for it here
 
         place(null, startX, startY);
         place(selected, endX, endY);
 
-        // promotion
         if (selected.toString().equals("Pawn")) {
-            System.out.println(endY);
+            // promotion
             if (selected.getPlayer().toString().equals(WHITE) && (endY >= 7)) {
                 selected = place(new Queen(players[currentPlayer]),endX,endY);
             } else if (selected.getPlayer().toString().equals(BLACK) && (endY <= 0)) {
                 selected = place(new Queen(players[currentPlayer]),endX,endY);
+            }
+            // en pasante
+            if (endX == startX-1) {
+                Piece left = getPiece(startX - 1, startY);
+                if (left != null && left.getPlayer().equals(otherPlayer(player))) {
+                    place(null, startX - 1, startY);
+                }
+            }
+            if (endX == startX+1) {
+                Piece right = getPiece(startX+1,startY);
+                if (right != null && right.getPlayer().equals(otherPlayer(player))) {
+                    place(null, startX+1, startY);
+                }
             }
         }
 
@@ -143,13 +156,15 @@ public class Board {
             Piece right = getPiece(x+1,y);
             if ((diag1 != null && diag1.getPlayer().equals(otherPlayer(player)))
             || (right != null && right.getPlayer().equals(otherPlayer(player)))) {
-                moves.add(new int[]{x+1,y+dir});
+                if (inBoard(x+1,y+dir))
+                    moves.add(new int[]{x+1,y+dir});
             }
             Piece diag2 = getPiece(x-1,y+dir);
             Piece left = getPiece(x-1,y);
             if ((diag2 != null && diag2.getPlayer().equals(otherPlayer(player)))
             || (left != null && left.getPlayer().equals(otherPlayer(player)))) {
-                moves.add(new int[]{x-1,y+dir});
+                if (inBoard(x-1,y+dir))
+                    moves.add(new int[]{x-1,y+dir});
             }
         }
 
@@ -170,10 +185,15 @@ public class Board {
                     if (p.getPlayer().equals(otherPlayer(play))) {
                         ArrayList<int[]> moves = getMoves(x,y);
                         for (int[] m: moves) {
-                            if (m[0] == pos[0] && m[1] == pos[1]) {
+                            if (m[0] == pos[0] && m[1] == pos[1])
                                 return true;
+                            // check for pawn en pasante
+                            if (p.toString().equals("Pawn")) {
+                                if (player.equals(WHITE))
+                                    if (m[0] == pos[0] && m[1] == pos[1]-1) return true;
+                                if (player.equals(BLACK))
+                                    if (m[0] == pos[0] && m[1] == pos[1]+1) return true;
                             }
-
                         }
                     }
                 }
