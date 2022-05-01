@@ -41,7 +41,6 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
 
         // setup buttons
         inflatedView.findViewById(R.id.new_game_button).setOnClickListener(this);
-        inflatedView.findViewById(R.id.continue_button).setOnClickListener(this);
         inflatedView.findViewById(R.id.daily_puzzle_button).setOnClickListener(this);
         inflatedView.findViewById(R.id.settings_button).setOnClickListener(this);
         inflatedView.findViewById(R.id.help_button).setOnClickListener(this);
@@ -65,8 +64,6 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
                 transaction.replace(R.id.container, gf);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                break;
-            case R.id.continue_button:
                 break;
             case R.id.daily_puzzle_button:
                 PuzzleFragment pf = new PuzzleFragment();

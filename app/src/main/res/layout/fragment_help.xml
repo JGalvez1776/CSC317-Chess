@@ -31,22 +31,6 @@
                 android:text="@string/chess_help1"
                 android:layout_gravity="center" />
 
-            <TextView
-                style="@style/Body"
-                android:id="@+id/chess_help2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chess_help2"
-                android:layout_gravity="center" />
-
-            <TextView
-                style="@style/Body"
-                android:id="@+id/chess_help3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chess_help3"
-                android:layout_gravity="center" />
-
             <!-- Daily Puzzle Description -->
             <TextView
                 style="@style/Heading"

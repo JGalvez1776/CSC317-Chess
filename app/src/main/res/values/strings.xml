@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Chess</string>
     <string name="title">CHESS</string>
-    <string name="new_game">NEW GAME</string>
+    <string name="new_game">START GAME</string>
     <string name="cont">CONTINUE</string>
     <string name="daily_puzzle">DAILY PUZZLE</string>
     <string name="undo">RESTART</string>
@@ -18,12 +18,8 @@
     <string name="black_turn">BLACK\'S TURN</string>
 
     <string name="chess_help_title">STANDARD CHESS</string>
-    <string name="chess_help1">\"New Game\" starts a new game of chess where two players can play
+    <string name="chess_help1">\"Start Game\" starts a new game of chess where two players can play
         against each other locally.</string>
-    <string name="chess_help2">\"Continue\" allows the user to play the last saved game of chess.</string>
-    <string name="chess_help3">While playing, the state of the game will be saved.
-    If "New Game" is selected while there is already a saved game, the saved game will be
-    overwritten with a new game.</string>
 
     <string name="puzzle_help_title">DAILY PUZZLE</string>
     <string name="puzzle_help">An alternative mode of chess where you are given a
