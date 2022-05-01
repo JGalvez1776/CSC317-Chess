@@ -130,22 +130,18 @@ public class Chessboard {
                 case GameController.PIECE_MOVED:
                     SharedPreferences sharedPref = containerActivity.getPreferences(Context.MODE_PRIVATE);
                     if (sharedPref.getInt("animate",1) == 1) {
-                        animatePiece(selected[0],selected[1],x,y);
-                        if (controller instanceof PuzzleGameController) {
-                            System.out.println("here");
-                            int[] compMove = ((PuzzleGameController) controller).getComputerMove();
-                            for (int i: compMove) System.out.println(i);
-                            animatePiece(compMove[0],compMove[1],compMove[2],compMove[3]);
-                        }
+                        if (controller instanceof PuzzleGameController)
+                            animatePiece(selected[0],selected[1],x,y,true);
+                        else animatePiece(selected[0],selected[1],x,y,false);
                     } else updateBoard();
                     break;
             }
         });
     }
 
-    private void animatePiece(int startX, int startY, int endX, int endY) {
-        System.out.println("animation start "+startX+" "+startY);
-        View piece = drawnBoard[startX][startY][0];
+    private void animatePiece(int startX, int startY, int endX, int endY, boolean comp) {
+        System.out.println("animation start "+startX+" "+startY+" to "+endX+" "+endY);
+        ImageView piece = (ImageView) drawnBoard[startX][startY][0];
         FrameLayout fl = (FrameLayout) piece.getParent();
         fl.bringToFront();
         int moveX = endX-startX;
@@ -163,8 +159,15 @@ public class Chessboard {
             @Override
             public void onAnimationEnd(Animator animation) {
                 // updates board
-                updateBoard();
                 System.out.println("animation end");
+                updateBoard();
+                if (comp) {
+                    if (controller instanceof PuzzleGameController) {
+                        int[] compMove = ((PuzzleGameController) controller).doComputerMove();
+                        System.out.println(compMove[0]+" "+compMove[1]+" "+compMove[2]+" "+compMove[3]);
+                        animatePiece(compMove[0],compMove[1],compMove[2],compMove[3],false);
+                    }
+                }
             }
             @Override
             public void onAnimationCancel(Animator animation) {}
@@ -195,37 +198,38 @@ public class Chessboard {
                     piece.setImageResource(pieceMap.get(pieceName));
                 } else piece.setImageResource(R.color.transparent);
 
-                // set current turn
-                TextView playerText = inflatedView.findViewById(R.id.current_turn);
-                String player = controller.getCurrentPlayer();
-                int playerStringId = player.equals(GameController.WHITE) ? R.string.white_turn : R.string.black_turn;
-                playerText.setText(playerStringId);
-
-                // set current check
-                TextView checkText = inflatedView.findViewById(R.id.current_check);
-                String check = controller.getCurrentCheck();
-                if (check != null) checkText.setText(check+" is in check!");
-                else checkText.setText("");
-
-                // check for winner
-                String winner = controller.checkWinner();
-                if (winner != null) playerText.setText(winner+" wins!");
-
-                // update move feedback
-                if (controller instanceof PuzzleGameController) {
-                    PuzzleGameController puzzleController = (PuzzleGameController) controller;
-                    TextView feedbackText = inflatedView.findViewById(R.id.move_feedback);
-                    if (puzzleController.gameOver && !puzzleController.correct) {
-                        feedbackText.setText("That move is incorrect!");
-                    } else if (puzzleController.gameOver && puzzleController.correct) {
-                        playerText.setText("PUZZLE COMPLETED");
-                    } else feedbackText.setText("");
-                }
-
                 // clear highlight
                 drawnBoard[x][y][1].setBackgroundColor(getCellColor(x,y));
             }
         }
+
+        // set current turn
+        TextView playerText = inflatedView.findViewById(R.id.current_turn);
+        String player = controller.getCurrentPlayer();
+        int playerStringId = player.equals(GameController.WHITE) ? R.string.white_turn : R.string.black_turn;
+        playerText.setText(playerStringId);
+
+        // set current check
+        TextView checkText = inflatedView.findViewById(R.id.current_check);
+        String check = controller.getCurrentCheck();
+        if (check != null) checkText.setText(check+" is in check!");
+        else checkText.setText("");
+
+        // check for winner
+        String winner = controller.checkWinner();
+        if (winner != null) playerText.setText(winner+" wins!");
+
+        // update move feedback
+        if (controller instanceof PuzzleGameController) {
+            PuzzleGameController puzzleController = (PuzzleGameController) controller;
+            TextView feedbackText = inflatedView.findViewById(R.id.move_feedback);
+            if (puzzleController.gameOver && !puzzleController.correct) {
+                feedbackText.setText("That move is incorrect!");
+            } else if (puzzleController.gameOver && puzzleController.correct) {
+                playerText.setText("PUZZLE COMPLETED");
+            } else feedbackText.setText("");
+        }
+        System.out.println("update finished");
     }
 
     /**

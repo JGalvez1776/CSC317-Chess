@@ -41,14 +41,14 @@ public class PuzzleGameController extends GameController {
     private static HashMap<Character, Integer> posMap;
     static {
         posMap = new HashMap<>();
-        posMap.put('a',0); posMap.put('1',0);
-        posMap.put('b',1); posMap.put('2',1);
-        posMap.put('c',2); posMap.put('3',2);
-        posMap.put('d',3); posMap.put('4',3);
-        posMap.put('e',4); posMap.put('5',4);
-        posMap.put('f',5); posMap.put('6',5);
-        posMap.put('g',6); posMap.put('7',6);
-        posMap.put('h',7); posMap.put('8',7);
+        posMap.put('a',0); posMap.put('1',7);
+        posMap.put('b',1); posMap.put('2',6);
+        posMap.put('c',2); posMap.put('3',5);
+        posMap.put('d',3); posMap.put('4',4);
+        posMap.put('e',4); posMap.put('5',3);
+        posMap.put('f',5); posMap.put('6',2);
+        posMap.put('g',6); posMap.put('7',1);
+        posMap.put('h',7); posMap.put('8',0);
     }
 
     public PuzzleGameController(String url) {
@@ -73,7 +73,9 @@ public class PuzzleGameController extends GameController {
             y = convertPosition(x, y)[1];
             Piece piece = game.getPiece(x, y);
             if (piece != null) {
-                String move = piece.getPlayer() + " " + piece + " " + x + " " + y;
+                int pos[] = convertPosition(x,y);
+                String move = piece.getPlayer() + " " + piece + " " + pos[0] + " " + pos[1];
+                System.out.println(move);
                 if (!move.equals(solution[currMove])) {
                     correct = false;
                     endGame();
@@ -83,38 +85,42 @@ public class PuzzleGameController extends GameController {
                 // determine to end game or do computer move
                 if (solution[currMove].equals("*"))
                     endGame();
-                else {
-                    String[] split = solution[currMove].split(" ");
-                    setComputerMove(new Player(split[0]), split[1], Integer.parseInt(split[2]), Integer.parseInt(split[3]));
-                    game.move(computerMove[0],computerMove[1],computerMove[2],computerMove[3]);
-                    currMove++;
-                }
-
             }
         }
         return result;
     }
 
     public void setComputerMove(Player player, String name, int x, int y) {
-        System.out.println(player+" "+name+" "+x+" "+y);
+        System.out.println("SETCOMPUTERMOVE "+player+" "+name+" "+x+" "+y);
         int[][] pieces = game.getPiecePosition(player, name);
         List<int[]> validMoves1 = game.getValidMoves(pieces[0][0],pieces[0][1]);
         List<int[]> validMoves2 = game.getValidMoves(pieces[1][0],pieces[1][1]);
-        if (validMoves1 != null && validMove(validMoves1,x,y)) {
-            computerMove = new int[]{pieces[0][0],pieces[0][1],x,y};
-        } else if (validMoves2 != null && validMove(validMoves2,x,y)) {
-            computerMove = new int[]{pieces[1][0],pieces[1][1],x,y};
+        int[] pos = convertPosition(x,y);
+        if (validMoves1 != null && validMove(validMoves1,pos[0],pos[1])) {
+            computerMove = new int[]{pieces[0][0],pieces[0][1],pos[0],pos[1]};
+        } else if (validMoves2 != null && validMove(validMoves2,pos[0],pos[1])) {
+            computerMove = new int[]{pieces[1][0],pieces[1][1],pos[0],pos[1]};
         }
     }
 
-    public int[] getComputerMove() {
-        return computerMove;
+    public int[] doComputerMove() {
+        String[] split = solution[currMove].split(" ");
+        setComputerMove(new Player(split[0]), split[1], Integer.parseInt(split[2]), Integer.parseInt(split[3]));
+        game.move(computerMove[0],computerMove[1],computerMove[2],computerMove[3]);
+        currMove++;
+        int[] cMove1 = convertPosition(computerMove[0],computerMove[1]);
+        int[] cMove2 = convertPosition(computerMove[2],computerMove[3]);
+        int[] animMove = new int[]{cMove1[0],cMove1[1],cMove2[0],cMove2[1]};
+        return animMove;
     }
 
     private String parseSolution(String sol) {
         String result;
         Player currPlayer = game.getCurrentPlayer();
         int m = sol.indexOf("1...");
+        if (m == -1) m = sol.indexOf("1.");
+        System.out.println(sol);
+        System.out.println(m);
         result = sol.substring(m);
         String[] split = result.split(" ");
         for (int i = 0; i < split.length; i++) {
