@@ -135,16 +135,20 @@ public class Board {
             }
         }
 
-        // en pasante
+        // diagonal pawn capture and en pasante
         if (piece.toString().equals("Pawn")) {
             int dir = 1;
-            if (player.equals(BLACK)) dir = -1;
+            if (player.toString().equals(BLACK)) dir = -1;
             Piece diag1 = getPiece(x+1,y+dir);
-            if (diag1 != null && diag1.getPlayer().equals(otherPlayer(player))) {
+            Piece right = getPiece(x+1,y);
+            if ((diag1 != null && diag1.getPlayer().equals(otherPlayer(player)))
+            || (right != null && right.getPlayer().equals(otherPlayer(player)))) {
                 moves.add(new int[]{x+1,y+dir});
             }
             Piece diag2 = getPiece(x-1,y+dir);
-            if (diag2 != null && diag2.getPlayer().equals(otherPlayer(player))) {
+            Piece left = getPiece(x-1,y);
+            if ((diag2 != null && diag2.getPlayer().equals(otherPlayer(player)))
+            || (left != null && left.getPlayer().equals(otherPlayer(player)))) {
                 moves.add(new int[]{x-1,y+dir});
             }
         }
