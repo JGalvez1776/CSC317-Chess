@@ -1,3 +1,9 @@
+/*
+ * @author: Min Tran
+ * @author: Jaygee Galvez
+ * @description: This activity handles the container activity for all the app's fragments.
+ */
+
 package com.example.chess;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +15,10 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * Retrieves preferences and displays menu fragment.
+     * @param savedInstanceState - saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
