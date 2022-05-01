@@ -112,6 +112,7 @@ public class Board {
         Piece piece = getPiece(x, y);
         if (piece == null)
             return null;
+        Player player = piece.getPlayer();
         List<Move> potentialMoves = piece.getPotentialMoves();
         for (Move move : potentialMoves) {
             int curX = x + move.getShiftX();
@@ -133,6 +134,21 @@ public class Board {
                 checkNext = move.isRepeatable() && canMoveTo(piece, curX, curY);
             }
         }
+
+        // en pasante
+        if (piece.toString().equals("Pawn")) {
+            int dir = 1;
+            if (player.equals(BLACK)) dir = -1;
+            Piece diag1 = getPiece(x+1,y+dir);
+            if (diag1 != null && diag1.getPlayer().equals(otherPlayer(player))) {
+                moves.add(new int[]{x+1,y+dir});
+            }
+            Piece diag2 = getPiece(x-1,y+dir);
+            if (diag2 != null && diag2.getPlayer().equals(otherPlayer(player))) {
+                moves.add(new int[]{x-1,y+dir});
+            }
+        }
+
         return moves;
     }
 
@@ -150,8 +166,10 @@ public class Board {
                     if (p.getPlayer().equals(otherPlayer(play))) {
                         ArrayList<int[]> moves = getMoves(x,y);
                         for (int[] m: moves) {
-                            if (m[0] == pos[0] && m[1] == pos[1])
-                            return true;
+                            if (m[0] == pos[0] && m[1] == pos[1]) {
+                                return true;
+                            }
+
                         }
                     }
                 }
