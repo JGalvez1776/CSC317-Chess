@@ -161,8 +161,10 @@ public class Chessboard {
                 updateBoard();
                 if (comp) {
                     if (controller instanceof PuzzleGameController) {
-                        int[] compMove = ((PuzzleGameController) controller).doComputerMove();
-                        animatePiece(compMove[0],compMove[1],compMove[2],compMove[3],false);
+                        if (!controller.gameOver) {
+                            int[] compMove = ((PuzzleGameController) controller).doComputerMove();
+                            animatePiece(compMove[0], compMove[1], compMove[2], compMove[3], false);
+                        }
                     }
                 }
             }
@@ -226,7 +228,6 @@ public class Chessboard {
                 playerText.setText("PUZZLE COMPLETED");
             } else feedbackText.setText("");
         }
-        System.out.println("update finished");
     }
 
     /**
