@@ -1,3 +1,10 @@
+/*
+ * @author: Min Tran
+ * @author: Jaygee Galvez
+ * @description: This fragment handles the help screen, which gives information on
+ * how to use the app.
+ */
+
 package com.example.chess;
 
 import android.os.Bundle;
@@ -12,9 +19,7 @@ import androidx.fragment.app.FragmentTransaction;
 public class HelpFragment extends Fragment implements View.OnClickListener {
 
     private static final int LAYOUT = R.layout.fragment_help;
-
     private AppCompatActivity containerActivity;
-    private View inflatedView;
 
     /**
      * Sets container activity.
@@ -35,16 +40,23 @@ public class HelpFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // get inflated view
-        inflatedView = inflater.inflate(LAYOUT, container, false);
+        View inflatedView = inflater.inflate(LAYOUT, container, false);
 
+        // setup button
         inflatedView.findViewById(R.id.rules_button).setOnClickListener(this);
 
         return inflatedView;
     }
 
+    /**
+     * Holds on click function for rules button.
+     * @param view - view that was clicked
+     */
     @Override
     public void onClick(View view) {
         if (view.getId() != R.id.rules_button) return;
+
+        // create and display rules fragment
         FragmentTransaction transaction = containerActivity.
                 getSupportFragmentManager().beginTransaction();
         RulesFragment rf = new RulesFragment();
