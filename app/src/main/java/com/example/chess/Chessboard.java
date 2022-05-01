@@ -43,7 +43,8 @@ public class Chessboard {
         this.inflatedView = inflatedView;
         this.controller = controller;
 
-        squareSize = Math.min(getWidthInPixels(),getHeightInPixels())/8;
+        squareSize = Math.min(getWidthInPixels(),
+                (int) (getHeightInPixels()-(getHeightInPixels()*0.3)))/8;
 
         colorDark = getThemeColor("colorPrimary");
         colorLight = getThemeColor("colorSecondary");
