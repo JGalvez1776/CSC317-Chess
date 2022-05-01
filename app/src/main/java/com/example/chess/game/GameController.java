@@ -24,6 +24,7 @@ public class GameController {
     public static final int PIECE_MOVED = 2;
     public static final String BLACK = Board.BLACK;
     public static final String WHITE = Board.WHITE;
+    public boolean gameOver = false;
 
     /**
      * Default constructor that initializes with default game of chess
@@ -39,7 +40,6 @@ public class GameController {
     public GameController(Board game) {
         this.game = game;
     }
-
 
     /**
      * Grabs the piece at (x, y) and returns its name.
@@ -57,7 +57,7 @@ public class GameController {
         
     }
 
-    private int[] convertPosition(int x, int y) {
+    protected int[] convertPosition(int x, int y) {
         return new int[] {x, Math.abs(Board.HEIGHT - y - 1)};
     }
 
@@ -71,6 +71,7 @@ public class GameController {
      * @return int error code. See class's static constants
      */
     public int select(int x, int y) {
+        if (gameOver) return 0;
         y = convertPosition(x, y)[1];
 
         if (selected != null) {
@@ -92,7 +93,7 @@ public class GameController {
         return selected != null ? PIECE_SELECTED : NOTHING_SELECTED;
     }
 
-    private boolean validMove(List<int[]> moves, int x, int y) {
+    protected boolean validMove(List<int[]> moves, int x, int y) {
         for (int[] position : moves) {
             if (position[0] == x && position[1] == y)
                 return true;
@@ -100,19 +101,30 @@ public class GameController {
         return false;
     }
 
-
     public String getCurrentPlayer() {
         return game.getCurrentPlayer().toString();
     }
 
     public String getCurrentCheck() {
         if (game.isCheck(WHITE)) {
-            System.out.println("white is in check");
             return WHITE;
         } else if (game.isCheck(BLACK)) {
-            System.out.println("black is in check");
             return BLACK;
         } else return null;
+    }
+
+    public String checkWinner() {
+        if (!game.isAlive(WHITE)) {
+            gameOver = true;
+            return BLACK;
+        } else if (!game.isAlive(BLACK)) {
+            gameOver = true;
+            return WHITE;
+        } else return null;
+    }
+
+    public void endGame() {
+        gameOver = true;
     }
 
 }

@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.widget.ImageViewCompat;
 
 import com.example.chess.game.GameController;
+import com.example.chess.game.PuzzleGameController;
 
 import java.util.HashMap;
 
@@ -128,9 +129,14 @@ public class Chessboard {
                     break;
                 case GameController.PIECE_MOVED:
                     SharedPreferences sharedPref = containerActivity.getPreferences(Context.MODE_PRIVATE);
-                    // TODO: Handle game logistics (Check, game over, update turn string)
                     if (sharedPref.getInt("animate",1) == 1) {
                         animatePiece(selected[0],selected[1],x,y);
+                        if (controller instanceof PuzzleGameController) {
+                            System.out.println("here");
+                            int[] compMove = ((PuzzleGameController) controller).getComputerMove();
+                            for (int i: compMove) System.out.println(i);
+                            animatePiece(compMove[0],compMove[1],compMove[2],compMove[3]);
+                        }
                     } else updateBoard();
                     break;
             }
@@ -138,6 +144,7 @@ public class Chessboard {
     }
 
     private void animatePiece(int startX, int startY, int endX, int endY) {
+        System.out.println("animation start "+startX+" "+startY);
         View piece = drawnBoard[startX][startY][0];
         FrameLayout fl = (FrameLayout) piece.getParent();
         fl.bringToFront();
@@ -157,6 +164,7 @@ public class Chessboard {
             public void onAnimationEnd(Animator animation) {
                 // updates board
                 updateBoard();
+                System.out.println("animation end");
             }
             @Override
             public void onAnimationCancel(Animator animation) {}
@@ -198,6 +206,21 @@ public class Chessboard {
                 String check = controller.getCurrentCheck();
                 if (check != null) checkText.setText(check+" is in check!");
                 else checkText.setText("");
+
+                // check for winner
+                String winner = controller.checkWinner();
+                if (winner != null) playerText.setText(winner+" wins!");
+
+                // update move feedback
+                if (controller instanceof PuzzleGameController) {
+                    PuzzleGameController puzzleController = (PuzzleGameController) controller;
+                    TextView feedbackText = inflatedView.findViewById(R.id.move_feedback);
+                    if (puzzleController.gameOver && !puzzleController.correct) {
+                        feedbackText.setText("That move is incorrect!");
+                    } else if (puzzleController.gameOver && puzzleController.correct) {
+                        playerText.setText("PUZZLE COMPLETED");
+                    } else feedbackText.setText("");
+                }
 
                 // clear highlight
                 drawnBoard[x][y][1].setBackgroundColor(getCellColor(x,y));

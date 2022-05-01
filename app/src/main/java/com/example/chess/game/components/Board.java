@@ -129,8 +129,9 @@ public class Board {
 
     public boolean isCheck(String player) {
         Player play = new Player(player);
-        int[] pos = getPiecePosition(new King(play));
-        if (pos == null) return false;
+        int[][] kings = getPiecePosition(play,"King");
+        if (kings == null) return false;
+        int[] pos = kings[0];
 
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
@@ -150,7 +151,7 @@ public class Board {
         return false;
     }
 
-    private Player otherPlayer(Player p) {
+    public Player otherPlayer(Player p) {
         if (p.toString().equals(WHITE)) {
             return players[1];
         } else return players[0];
@@ -163,19 +164,32 @@ public class Board {
         return true;
     }
 
-    private int[] getPiecePosition(Piece piece) {
+    public int[][] getPiecePosition(Player player, String name) {
+        int a = 0;
+        int[][] all = new int[2][2];
         int[] pos = new int[2]; // 0 = x, 1 = y
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
-                if (piece.equals(getPiece(x,y))) {
-                    pos[0] = x; pos[1] = y;
-                    return pos;
+                Piece piece = getPiece(x,y);
+                if (piece != null) {
+                    if (piece.toString().equals(name) && piece.getPlayer().equals(player)) {
+                        pos[0] = x;
+                        pos[1] = y;
+                        all[a] = pos;
+                        a++;
+                    }
                 }
             }
         }
-        return null;
+        if (a <= 0) return null;
+        return all;
     }
 
+    public boolean isAlive(String player) {
+        Player p = new Player(player);
+        if (getPiecePosition(p, "King") == null) return false;
+        return true;
+    }
 
     private boolean canMoveTo(Piece piece, int x, int y) {
 
@@ -187,8 +201,6 @@ public class Board {
     private void place(Piece piece, int x, int y) {
         board[y][x] = piece;
     }
-
-
 
     public Piece getPiece(int x, int y) {
         if (!inBoard(x,y)) return null;
