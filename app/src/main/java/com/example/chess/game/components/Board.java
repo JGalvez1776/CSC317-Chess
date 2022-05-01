@@ -18,6 +18,8 @@ public class Board {
     private Piece[][] board = new Piece[HEIGHT][WIDTH];
     private Player[] players = new Player[]{new Player(WHITE), new Player(BLACK)};
     private int currentPlayer = 0;
+    private boolean[] canCastle = new boolean[4];
+    // white kingside, white queenside, black kingside, black queenside
 
     private static final String DEFAULT_BOARD = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     private static HashMap<Character, Placeable> pieceMap;
@@ -72,8 +74,20 @@ public class Board {
         } else {
             currentPlayer = 0;
         }
+        stringIndex += 2;
 
-        // TODO: Handle castling
+        // handles castling
+        char c = initalPosition.charAt(stringIndex);
+        while (c != ' ') {
+            c = initalPosition.charAt(stringIndex);
+            switch (c) {
+                case 'K': canCastle[0] = true; break;
+                case 'Q': canCastle[1] = true; break;
+                case 'k': canCastle[2] = true; break;
+                case 'q': canCastle[3] = true; break;
+            }
+            stringIndex++;
+        }
     }
 
     public void move(int startX, int startY, int endX, int endY) {
@@ -106,6 +120,33 @@ public class Board {
             }
         }
 
+        if (selected.toString().equals("King")) {
+            // castling
+            if (selected.getPlayer().toString().equals(WHITE)) {
+                if (endX - startX > 1) {
+                    place(null,7,0);
+                    place(new Rook(players[currentPlayer]),endX-1,startY);
+                    canCastle[0] = false; canCastle[1] = false;
+                }
+                if (endX - startX < -1) {
+                    place(null,0,0);
+                    place(new Rook(players[currentPlayer]),endX+1,startY);
+                    canCastle[0] = false; canCastle[1] = false;
+                }
+            } else {
+                if (endX - startX > 1) {
+                    place(null,7,7);
+                    place(new Rook(players[currentPlayer]),endX-1,startY);
+                    canCastle[2] = false; canCastle[3] = false;
+                }
+                if (endX - startX < -1) {
+                    place(null,0,7);
+                    place(new Rook(players[currentPlayer]),endX+1,startY);
+                    canCastle[2] = false; canCastle[3] = false;
+                }
+            }
+        }
+
         currentPlayer = (currentPlayer + 1) % players.length;
         selected.setMoved();
     }
@@ -115,7 +156,6 @@ public class Board {
         ArrayList<int[]> moves = getMoves(x,y);
 
         // TODO: Also make sure that moves do not put oneself into check!
-        // TODO: Add the special moves here!!!
 
         return moves;
     }
@@ -165,6 +205,17 @@ public class Board {
             || (left != null && left.getPlayer().equals(otherPlayer(player)))) {
                 if (inBoard(x-1,y+dir))
                     moves.add(new int[]{x-1,y+dir});
+            }
+        }
+
+        // check for castling
+        if (piece instanceof King) {
+            if (piece.getPlayer().toString().equals(WHITE)) {
+                if (canCastle[0]) moves.add(new int[]{x - 2, y});
+                if (canCastle[1]) moves.add(new int[]{x + 2, y});
+            } else {
+                if (canCastle[2]) moves.add(new int[]{x - 2, y});
+                if (canCastle[3]) moves.add(new int[]{x + 2, y});
             }
         }
 
