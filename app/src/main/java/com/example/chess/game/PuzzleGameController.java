@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -75,6 +76,11 @@ public class PuzzleGameController extends GameController {
             if (piece != null) {
                 int pos[] = convertPosition(x,y);
                 String move = piece.getPlayer() + " " + piece + " " + pos[0] + " " + pos[1];
+                if (piece instanceof King && (Math.abs(x - lastMoveorigin[0]) >= 2)) {
+                    int difference = x - lastMoveorigin[0];
+                    if (difference > 0) move = "O-O";
+                    else move = "O-O-O";
+                }
                 System.out.println(move);
                 if (!move.equals(solution[currMove])) {
                     correct = false;
@@ -91,7 +97,18 @@ public class PuzzleGameController extends GameController {
     }
 
     public void setComputerMove(Player player, String name, int x, int y) {
-        int[][] pieces = game.getPiecePosition(player, name);
+        System.out.print("SET: " + x + " " + y);
+        List<int[]> pieces = game.getPiecePosition(player, name);
+        int[] pos = convertPosition(x,y);
+        for (int[] location : pieces) {
+            List<int[]> validMoves = game.getValidMoves(location[0], location[1]);
+            if (validMoves != null && validMove(validMoves, pos[0], pos[1])) {
+                computerMove = new int[]{location[0],location[1],pos[0],pos[1]};
+            }
+        }
+
+        /*
+
         List<int[]> validMoves1 = game.getValidMoves(pieces[0][0],pieces[0][1]);
         List<int[]> validMoves2 = game.getValidMoves(pieces[1][0],pieces[1][1]);
         int[] pos = convertPosition(x,y);
@@ -100,11 +117,17 @@ public class PuzzleGameController extends GameController {
         } else if (validMoves2 != null && validMove(validMoves2,pos[0],pos[1])) {
             computerMove = new int[]{pieces[1][0],pieces[1][1],pos[0],pos[1]};
         }
+
+         */
     }
 
     public int[] doComputerMove() {
         String[] split = solution[currMove].split(" ");
+        System.out.println("Attempting: " + solution[currMove]);
+        System.out.println("Breakdown: " + Arrays.toString(split));
         setComputerMove(new Player(split[0]), split[1], Integer.parseInt(split[2]), Integer.parseInt(split[3]));
+        System.out.println("Comp Moves: " + Arrays.toString(computerMove));
+
         game.move(computerMove[0],computerMove[1],computerMove[2],computerMove[3]);
         currMove++;
         int[] cMove1 = convertPosition(computerMove[0],computerMove[1]);
@@ -129,8 +152,9 @@ public class PuzzleGameController extends GameController {
             }
             split[i] = split[i].replaceAll("\\.|x|\\+","");
 
-            if (split[i].equals("O-O-O")) {
-                split[i] = "Castle";
+            if (split[i].equals("O-O-O") || split[i].equals("O-O")) {
+                //split[i] = "Castle";
+                currPlayer = game.otherPlayer(currPlayer);
                 continue;
             }
 
@@ -140,6 +164,7 @@ public class PuzzleGameController extends GameController {
             currPlayer = game.otherPlayer(currPlayer);
         }
         solution = split;
+        System.out.println("SOLUTION: " + Arrays.toString(solution));
         return result;
     }
 
