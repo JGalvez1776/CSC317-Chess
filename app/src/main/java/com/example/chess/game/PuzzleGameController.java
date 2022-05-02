@@ -146,7 +146,10 @@ public class PuzzleGameController extends GameController {
         result = sol.substring(m);
         String[] split = result.split(" ");
         for (int i = 0; i < split.length; i++) {
-            if (split[i].equals("*")) continue;
+            if (split[i].equals("*") || split[i].equals("1-0")) {
+                split[i] = "*";
+                continue;
+            }
             if (Character.isDigit(split[i].charAt(0))) {
                 split[i] = split[i].substring(1);
             }
