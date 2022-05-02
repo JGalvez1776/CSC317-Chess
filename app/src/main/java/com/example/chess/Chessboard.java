@@ -64,7 +64,7 @@ public class Chessboard {
 
     // drawing and animation variables
     public static final int SELECT = 0;
-    public static final int HIGHLIGHT = 1;
+    public static final int AVAILABLE = 1;
     int squareSize; int animSpeed;
     int colorDark; int colorLight; int colorSelect;
     int colorHighlight; int colorHighlightDark;
@@ -196,9 +196,9 @@ public class Chessboard {
                     updateBoard();
                     selected[0] = x; selected[1] = y;
                     setHighlight(selected[0],selected[1], SELECT);
-                    // highlight valid moves
+                    // highlight available moves
                     for (int[] move : controller.getAvailableMoves()) {
-                        setHighlight(move[0],move[1], HIGHLIGHT);
+                        setHighlight(move[0],move[1], AVAILABLE);
                     }
                     break;
                 case GameController.PIECE_MOVED:
@@ -263,7 +263,7 @@ public class Chessboard {
         TextView cell = (TextView) drawnBoard[x][y][1];
         if (mode == SELECT) {
             cell.setBackgroundColor(colorSelect);
-        } else if (mode == HIGHLIGHT) {
+        } else if (mode == AVAILABLE) {
             int id = getCellColor(x,y);
             if (id == colorDark) {
                 cell.setBackgroundColor(colorHighlightDark);
