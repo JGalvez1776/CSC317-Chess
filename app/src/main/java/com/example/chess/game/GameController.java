@@ -11,6 +11,7 @@ import com.example.chess.game.components.Board;
 import com.example.chess.game.components.Move;
 import com.example.chess.game.pieces.Piece;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -101,6 +102,20 @@ public class GameController {
                 return true;
         }
         return false;
+    }
+
+    public List<int[]> getAvailableMoves() {
+        List<int[]> availableMoves = new ArrayList<>();
+        List<int[]> potentialMoves = game.getValidMoves(selected[0], selected[1]);
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                int[] pos = convertPosition(x,y);
+                if (potentialMoves != null && validMove(potentialMoves, x, y)) {
+                    availableMoves.add(new int[]{pos[0],pos[1]});
+                }
+            }
+        }
+        return availableMoves;
     }
 
     public String getCurrentPlayer() {

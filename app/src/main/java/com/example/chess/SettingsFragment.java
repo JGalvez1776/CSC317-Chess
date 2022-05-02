@@ -83,7 +83,7 @@ public class SettingsFragment extends Fragment {
             editor.apply();
             containerActivity.setTheme(sharedPref.getInt("theme", R.style.Theme_Classic));
             ConstraintLayout cl = containerActivity.findViewById(R.id.container);
-            cl.setBackgroundColor(getThemeColor("colorSecondary"));
+            cl.setBackgroundColor(getThemeColor("colorPrimary"));
         });
 
         // setup toggles

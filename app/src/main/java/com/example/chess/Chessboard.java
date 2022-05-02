@@ -30,6 +30,7 @@ import com.example.chess.game.GameController;
 import com.example.chess.game.PuzzleGameController;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class Chessboard {
     // chessboard views, with cell and piece view
@@ -62,8 +63,11 @@ public class Chessboard {
     protected GameController controller;
 
     // drawing and animation variables
+    public static final int SELECT = 0;
+    public static final int HIGHLIGHT = 1;
     int squareSize; int animSpeed;
-    int colorDark; int colorLight; int colorHighlight;
+    int colorDark; int colorLight; int colorSelect;
+    int colorHighlight; int colorHighlightDark;
 
     /**
      * Chessboard constructor.
@@ -80,10 +84,12 @@ public class Chessboard {
 
         // get drawing and animation variables
         squareSize = Math.min(getWidthInPixels(),
-                (int) (getHeightInPixels()-(getHeightInPixels()*0.3)))/8;
-        colorDark = getThemeColor("colorPrimary");
-        colorLight = getThemeColor("colorSecondary");
+                (int) (getHeightInPixels()-(getHeightInPixels()*0.30)))/8;
+        colorDark = getThemeColor("colorPrimaryDark");
+        colorLight = getThemeColor("colorPrimary");
+        colorSelect = getThemeColor("colorSecondary");
         colorHighlight = getThemeColor("colorTertiary");
+        colorHighlightDark = getThemeColor("colorOnTertiary");
         animSpeed = 500;
     }
 
@@ -143,7 +149,7 @@ public class Chessboard {
         ImageView piece = new ImageView(containerActivity);
         piece.setImageTintMode(android.graphics.PorterDuff.Mode.MULTIPLY);
         ImageViewCompat.setImageTintList
-                (piece, ColorStateList.valueOf(getThemeColor("colorSecondary")));
+                (piece, ColorStateList.valueOf(getThemeColor("colorPrimary")));
 
         // create cell view
         TextView cell = new TextView(containerActivity);
@@ -182,14 +188,18 @@ public class Chessboard {
             int result = controller.select(x, y);
             switch (result) {
                 case GameController.NOTHING_SELECTED:
-                    // remove highlight
-                    setHighlight(selected[0],selected[1],false);
+                    // remove highlights
+                    updateBoard();
                     break;
                 case GameController.PIECE_SELECTED:
                     // remove and set highlight
-                    setHighlight(selected[0],selected[1],false);
+                    updateBoard();
                     selected[0] = x; selected[1] = y;
-                    setHighlight(selected[0],selected[1],true);
+                    setHighlight(selected[0],selected[1], SELECT);
+                    // highlight valid moves
+                    for (int[] move : controller.getAvailableMoves()) {
+                        setHighlight(move[0],move[1], HIGHLIGHT);
+                    }
                     break;
                 case GameController.PIECE_MOVED:
                     // animate piece (if applicable) and update board
@@ -247,15 +257,19 @@ public class Chessboard {
      * Sets highlight of board square given its coordinates.
      * @param x x coordinate of square
      * @param y y coordinate of square
-     * @param highlight whether or not to highlight square
+     * @param mode determines whether to highlight yellow or green
      */
-    public void setHighlight(int x, int y, boolean highlight) {
+    public void setHighlight(int x, int y, int mode) {
         TextView cell = (TextView) drawnBoard[x][y][1];
-        if (highlight) {
-            cell.setBackgroundColor(colorHighlight);
-        } else {
-            cell.setBackgroundColor(getCellColor(x,y));
+        if (mode == SELECT) {
+            cell.setBackgroundColor(colorSelect);
+        } else if (mode == HIGHLIGHT) {
+            int id = getCellColor(x,y);
+            if (id == colorDark) {
+                cell.setBackgroundColor(colorHighlightDark);
+            } else cell.setBackgroundColor(colorHighlight);
         }
+
     }
 
     /**

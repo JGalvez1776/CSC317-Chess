@@ -5,6 +5,8 @@
     <color name="gray">#656565</color>
     <color name="transparent">#00000000</color>
     <color name="yellow">#F9FF3D</color>
+    <color name="green">#90FF71</color>
+    <color name="dark_green">#15CF49</color>
     <color name="dark_wood">#AF6023</color>
     <color name="light_wood">#E1BE94</color>
     <color name="dark_olive">#4A7A38</color>

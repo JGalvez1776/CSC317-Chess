@@ -84,6 +84,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/share"
+        android:layout_margin="10dp"
         android:padding="10dp"
         app:layout_constraintTop_toTopOf="@id/board_bottom"
         app:layout_constraintBottom_toBottomOf="parent"
