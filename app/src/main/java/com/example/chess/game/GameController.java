@@ -1,4 +1,4 @@
-/**
+/*
  * @author: Jaugee Galvez
  * @description: Servers as a controller class for the game of chess.
  *               Abstracts the implementation to instead focus on selecting
@@ -8,25 +8,25 @@
 package com.example.chess.game;
 
 import com.example.chess.game.components.Board;
-import com.example.chess.game.components.Move;
 import com.example.chess.game.pieces.Piece;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class GameController {
 
+    // controller variables
     protected Board game;
     protected int[] selected = null;
     protected int[] lastMoveorigin = null;
+    public boolean gameOver = false;
 
+    // final variables
     public static final int NOTHING_SELECTED = 0;
     public static final int PIECE_SELECTED = 1;
     public static final int PIECE_MOVED = 2;
     public static final String BLACK = Board.BLACK;
     public static final String WHITE = Board.WHITE;
-    public boolean gameOver = false;
 
     /**
      * Default constructor that initializes with default game of chess
@@ -56,7 +56,6 @@ public class GameController {
         if (piece == null) return null;
         String name = piece.getName();
         return name.toLowerCase();
-        
     }
 
     /**

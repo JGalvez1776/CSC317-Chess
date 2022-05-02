@@ -3,13 +3,7 @@ package com.example.chess.game;
 import com.example.chess.game.components.Board;
 import com.example.chess.game.components.Player;
 import com.example.chess.game.pieces.Piece;
-import com.example.chess.game.pieces.Placeable;
-import com.example.chess.game.pieces.concrete.Bishop;
 import com.example.chess.game.pieces.concrete.King;
-import com.example.chess.game.pieces.concrete.Knight;
-import com.example.chess.game.pieces.concrete.Pawn;
-import com.example.chess.game.pieces.concrete.Queen;
-import com.example.chess.game.pieces.concrete.Rook;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -106,19 +100,6 @@ public class PuzzleGameController extends GameController {
                 computerMove = new int[]{location[0],location[1],pos[0],pos[1]};
             }
         }
-
-        /*
-
-        List<int[]> validMoves1 = game.getValidMoves(pieces[0][0],pieces[0][1]);
-        List<int[]> validMoves2 = game.getValidMoves(pieces[1][0],pieces[1][1]);
-        int[] pos = convertPosition(x,y);
-        if (validMoves1 != null && validMove(validMoves1,pos[0],pos[1])) {
-            computerMove = new int[]{pieces[0][0],pieces[0][1],pos[0],pos[1]};
-        } else if (validMoves2 != null && validMove(validMoves2,pos[0],pos[1])) {
-            computerMove = new int[]{pieces[1][0],pieces[1][1],pos[0],pos[1]};
-        }
-
-         */
     }
 
     public int[] doComputerMove() {
@@ -171,14 +152,21 @@ public class PuzzleGameController extends GameController {
         return result;
     }
 
+    /**
+     * Retrieves JSON from url and returns JSONObject.
+     * @param urlString string of url with JSON
+     * @return JSONObject of JSON in url.
+     */
     private JSONObject getJSON(String urlString) {
         try {
-            String json = "";
-            String line;
+            String json = ""; String line;
             URL url = new URL(urlString);
 
+            // open connection and read json
             URLConnection urlc = url.openConnection();
-            urlc.setRequestProperty("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36 OPR/71.0.3770.284");
+            urlc.setRequestProperty("user-agent", "Mozilla/5.0 " +
+                    "(Macintosh; Intel Mac OS X 10_14_6)AppleWebKit/537.36 " +
+                    "(KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36 OPR/71.0.3770.284");
             BufferedReader in = new BufferedReader(new InputStreamReader(urlc.getInputStream()));
             while ((line = in.readLine()) != null) {
                 json += line;
@@ -186,10 +174,8 @@ public class PuzzleGameController extends GameController {
             in.close();
 
             JSONObject jsonObject = new JSONObject(json);
-
             return jsonObject;
         } catch (Exception e) {
-            System.err.println("An error occured fetching JSON");
             e.printStackTrace();
         }
         return null;
