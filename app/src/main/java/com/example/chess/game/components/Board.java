@@ -205,7 +205,10 @@ public class Board {
             boolean checkNext = canMoveTo(piece, curX, curY);
             boolean blocked = false;
             while (checkNext && !blocked) {
-                moves.add(new int[]{curX, curY});
+                if (move.canCapture() && getPiece(curX,curY) != null) {
+                    moves.add(new int[]{curX, curY});
+                } else if (getPiece(curX,curY) == null)
+                    moves.add(new int[]{curX, curY});
 
                 // check if enemy piece is blocking the way
                 Piece curPiece = getPiece(curX,curY);
@@ -330,7 +333,6 @@ public class Board {
     }
 
     private boolean canMoveTo(Piece piece, int x, int y) {
-
         return 0 <= x && x < WIDTH && 0 <= y && y < HEIGHT &&
                (getPiece(x, y) == null ||
                 !getPiece(x, y).getPlayer().equals(piece.getPlayer()));

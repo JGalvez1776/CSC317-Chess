@@ -19,6 +19,7 @@ import java.util.List;
 public class PuzzleGameController extends GameController {
 
     public static final String DAILY_PUZZLE_URL = "https://api.chess.com/pub/puzzle";
+    public static final String RANDOM_PUZZLE_URL = "https://api.chess.com/pub/puzzle/random";
     public String[] solution;
     public int currMove = 0;
     public boolean correct = true;
@@ -63,7 +64,10 @@ public class PuzzleGameController extends GameController {
 
     @Override
     public int select(int x, int y) {
+        // do normal select
         int result = super.select(x,y);
+
+        // if piece moved, check move against solution
         if (result == PIECE_MOVED) {
             y = convertPosition(x, y)[1];
             Piece piece = game.getPiece(x, y);
@@ -127,7 +131,8 @@ public class PuzzleGameController extends GameController {
         result = sol.substring(m);
         String[] split = result.split(" ");
         for (int i = 0; i < split.length; i++) {
-            if (split[i].equals("*") || split[i].equals("1-0")) {
+            System.out.println(split[i]);
+            if (split[i].equals("*") || split[i].equals("1-0") || split[i].equals("0-1")) {
                 split[i] = "*";
                 continue;
             }
@@ -135,15 +140,19 @@ public class PuzzleGameController extends GameController {
                 split[i] = split[i].substring(1);
             }
             split[i] = split[i].replaceAll("\\.|x|\\+","");
+            System.out.println(split[i]);
 
             if (split[i].equals("O-O-O") || split[i].equals("O-O")) {
-                //split[i] = "Castle";
                 currPlayer = game.otherPlayer(currPlayer);
                 continue;
             }
 
             // translate to move
-            split[i] = currPlayer + " " + fenMap.get(split[i].charAt(0)) + " "
+            String pieceName = fenMap.get(split[i].charAt(0));
+            if (!Character.isUpperCase(split[i].charAt(0))) {
+                pieceName = fenMap.get('P');
+            }
+            split[i] = currPlayer + " " + pieceName + " "
                     + posMap.get(split[i].charAt(1)) + " " + posMap.get(split[i].charAt(2));
             currPlayer = game.otherPlayer(currPlayer);
         }
