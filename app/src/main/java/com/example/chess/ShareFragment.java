@@ -54,7 +54,7 @@ public class ShareFragment extends Fragment {
     }
 
     /**
-     * Upon view creation, setups layout and contact list view.
+     * Upon view creation, setup layout and contact list view.
      * @param inflater - layout inflater
      * @param container - view group container
      * @param savedInstanceState - saved instance state

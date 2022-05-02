@@ -20,7 +20,7 @@ public class RulesFragment extends Fragment {
     private static final int LAYOUT = R.layout.fragment_rules;
 
     /**
-     * Upon view creation, setups layout and opens webpage.
+     * Upon view creation, setup layout and opens webpage.
      * @param inflater - layout inflater
      * @param container - view group container
      * @param savedInstanceState - saved instance state

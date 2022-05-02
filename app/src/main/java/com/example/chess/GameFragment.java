@@ -7,18 +7,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+
 import com.example.chess.game.GameController;
 
 
 public class GameFragment extends Fragment implements View.OnClickListener {
 
+    // fragment variables
     private static final int LAYOUT = R.layout.fragment_game;
-
     protected AppCompatActivity containerActivity;
     protected View inflatedView;
+
+    // game and board variables
     protected GameController controller;
     protected Chessboard chessboard;
 
@@ -31,7 +34,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * Upon view creation, sets layout, and returns inflated view.
+     * Upon view creation, setup layout.
      * @param inflater layout inflater
      * @param container view group container
      * @param savedInstanceState saved instance state
@@ -56,12 +59,13 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         ((TextView) inflatedView.findViewById(R.id.share_button)).setAlpha(0.0F);
 
         setupBoard();
-
         return inflatedView;
     }
 
+    /**
+     * Gets the controller and draws the chessboard.
+     */
     public void setupBoard() {
-        // create the game controller
         controller = getController();
         chessboard = new Chessboard(containerActivity, inflatedView, controller);
         chessboard.drawBoard();
@@ -81,13 +85,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      */
     @Override
     public void onClick(View view) {
-        FragmentTransaction transaction = containerActivity.
-                getSupportFragmentManager().beginTransaction();
-
-        switch (view.getId()) {
-            case R.id.undo_button:
-                setupBoard();
-                break;
+        if (view.getId() == R.id.undo_button) {
+            setupBoard();
         }
     }
 }

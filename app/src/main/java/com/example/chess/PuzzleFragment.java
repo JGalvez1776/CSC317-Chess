@@ -49,7 +49,7 @@ public class PuzzleFragment extends GameFragment {
     }
 
     /**
-     * Upon view creation, setups layout, permission launcher, and game controller.
+     * Upon view creation, setup layout, permission launcher, and game controller.
      * @param inflater layout inflater
      * @param container view group container
      * @param savedInstanceState saved instance state
@@ -81,7 +81,7 @@ public class PuzzleFragment extends GameFragment {
     }
 
     /**
-     * Setups the board by fetching the controller and drawing the chessboard once fetched.
+     * Fetches the controller and draws the chessboard once fetched.
      */
     @Override
     public void setupBoard() {
