@@ -1,4 +1,4 @@
-/**
+/*
  * @author: Min Tran
  * @description: This fragment handles the settings screen, which allows the user to adjust their
  * preferences.

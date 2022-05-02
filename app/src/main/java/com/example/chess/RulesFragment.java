@@ -1,4 +1,4 @@
-/**
+/*
  * @author: Min Tran
  * @description: This fragment handles the rules screen, which opens a webpage of chess rules.
  */

@@ -1,4 +1,4 @@
-/**
+/*
  * @author: Min Tran
  * @description: This fragment handles the sharing interface and functionality.
  */

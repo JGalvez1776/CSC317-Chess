@@ -1,4 +1,4 @@
-/**
+/*
  * @author: Min Tran
  * @description: This fragment handles the menu screen and its associated buttons.
  */

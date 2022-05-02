@@ -1,4 +1,4 @@
-/**
+/*
  * @author: Min Tran
  * @description: This fragment handles the drawing of the chessboard.
  */
