@@ -1,5 +1,7 @@
 package com.example.chess;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,7 +11,10 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.chess.game.GameController;
@@ -26,6 +31,7 @@ public class PuzzleFragment extends GameFragment {
     protected View inflatedView;
     protected GameController controller;
     protected Chessboard chessboard;
+    ActivityResultLauncher<String> requestPermissionLauncher;
     protected int attempts = 0;
 
     /**
@@ -46,6 +52,12 @@ public class PuzzleFragment extends GameFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        requestPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(), isGranted -> {
+                    if (isGranted) openShareFragment();
+                });
+
         // create the game controller
         new FetchPuzzle().execute(PuzzleGameController.DAILY_PUZZLE_URL);
 
@@ -82,16 +94,24 @@ public class PuzzleFragment extends GameFragment {
                 ((TextView) inflatedView.findViewById(R.id.attempts_count)).setText("Attempts: "+attempts);
                 break;
             case R.id.share_button:
-                FragmentTransaction transaction = containerActivity.
-                        getSupportFragmentManager().beginTransaction();
-                ShareFragment sf = new ShareFragment();
-                sf.setContainerActivity(containerActivity);
-                sf.setAttempts(attempts);
-                transaction.replace(R.id.container, sf);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                if (ContextCompat.checkSelfPermission(
+                        containerActivity, Manifest.permission.READ_CONTACTS) ==
+                        PackageManager.PERMISSION_GRANTED) {
+                    openShareFragment();
+                } else requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS);
                 break;
         }
+    }
+
+    public void openShareFragment() {
+        FragmentTransaction transaction = containerActivity.
+                getSupportFragmentManager().beginTransaction();
+        ShareFragment sf = new ShareFragment();
+        sf.setContainerActivity(containerActivity);
+        sf.setAttempts(attempts);
+        transaction.replace(R.id.container, sf);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     private class FetchPuzzle extends AsyncTask<String, Integer, GameController> {
