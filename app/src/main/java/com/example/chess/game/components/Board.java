@@ -260,7 +260,7 @@ public class Board {
     public boolean isCheck(String player) {
         Player play = new Player(player);
         List<int[]> kings = getPiecePosition(play,"King");
-        if (kings == null) return false;
+        if (kings.isEmpty()) return false;
         int[] pos = kings.get(0);
 
         for (int x = 0; x < 8; x++) {
@@ -323,7 +323,9 @@ public class Board {
 
     public boolean isAlive(String player) {
         Player p = new Player(player);
-        if (getPiecePosition(p, "King") == null) return false;
+        if (getPiecePosition(p, "King").isEmpty()) {
+            return false;
+        }
         return true;
     }
 

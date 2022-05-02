@@ -59,6 +59,12 @@ public class GameController {
         
     }
 
+    /**
+     * Converts board position to controller position.
+     * @param x board x
+     * @param y board y
+     * @return Controller position.
+     */
     protected int[] convertPosition(int x, int y) {
         return new int[] {x, Math.abs(Board.HEIGHT - y - 1)};
     }
@@ -96,6 +102,13 @@ public class GameController {
         return selected != null ? PIECE_SELECTED : NOTHING_SELECTED;
     }
 
+    /**
+     * Checks whether or not a move is valid.
+     * @param moves list of potential moves
+     * @param x x coordinate
+     * @param y y coordinate
+     * @return Whether or not the move is valid.
+     */
     protected boolean validMove(List<int[]> moves, int x, int y) {
         for (int[] position : moves) {
             if (position[0] == x && position[1] == y)
@@ -104,6 +117,10 @@ public class GameController {
         return false;
     }
 
+    /**
+     * Returns list of all available moves to make for the selected piece.
+     * @return List of all available moves.
+     */
     public List<int[]> getAvailableMoves() {
         List<int[]> availableMoves = new ArrayList<>();
         List<int[]> potentialMoves = game.getValidMoves(selected[0], selected[1]);
@@ -118,11 +135,20 @@ public class GameController {
         return availableMoves;
     }
 
+    /**
+     * Returns string of current player.
+     * @return Current player.
+     */
     public String getCurrentPlayer() {
         return game.getCurrentPlayer().toString();
     }
 
+    /**
+     * Returns string of current player in check.
+     * @return Current player in check. Returns null if no player is in check.
+     */
     public String getCurrentCheck() {
+        if (gameOver) return null;
         if (game.isCheck(WHITE)) {
             return WHITE;
         } else if (game.isCheck(BLACK)) {
@@ -130,16 +156,21 @@ public class GameController {
         } else return null;
     }
 
+    /**
+     * Returns string of current player who has won.
+     * @return Current player who has won. Returns null if no player is in check.
+     */
     public String checkWinner() {
         if (!game.isAlive(WHITE)) {
-            gameOver = true;
             return BLACK;
         } else if (!game.isAlive(BLACK)) {
-            gameOver = true;
             return WHITE;
         } else return null;
     }
 
+    /**
+     * Ends the game, preventing anymore moves from being made.
+     */
     public void endGame() {
         gameOver = true;
     }

@@ -103,7 +103,8 @@ public class PuzzleFragment extends GameFragment {
                 if (controller != null) {
                     setupBoard();
                     attempts++;
-                    ((TextView) inflatedView.findViewById(R.id.attempts_count)).setText("Attempts: " + attempts);
+                    ((TextView) inflatedView.findViewById(R.id.attempts_count))
+                            .setText("Attempts: " + attempts);
                 }
                 break;
             // opens share fragment

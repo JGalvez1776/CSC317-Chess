@@ -30,7 +30,6 @@ import com.example.chess.game.GameController;
 import com.example.chess.game.PuzzleGameController;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class Chessboard {
     // chessboard views, with cell and piece view
@@ -314,7 +313,10 @@ public class Chessboard {
 
         // check for winner
         String winner = controller.checkWinner();
-        if (winner != null) playerText.setText(winner+" wins!");
+        if (winner != null) {
+            controller.endGame();
+            playerText.setText(winner.toUpperCase()+" WINS");
+        }
 
         // update move feedback and check if puzzle is completed
         if (controller instanceof PuzzleGameController) {
