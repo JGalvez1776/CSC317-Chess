@@ -92,6 +92,7 @@ public class Board {
     }
 
     public void move(int startX, int startY, int endX, int endY) {
+        System.out.println("INFO: " + startX + " " + startY + " " + endX + " " + endY);
         Piece selected = getPiece(startX, startY);
         Player player = selected.getPlayer();
 
@@ -151,6 +152,37 @@ public class Board {
         selected.setMoved();
     }
 
+    /**
+        Returns if a king of a given row can castle to a given side
+        @param x X coordinate of where to castle to
+        @param y Y coordinate of the row castling on
+        @return Boolean if the given castle can be performed
+     */
+    private boolean canCastle(int x, int y) {
+        // Makes sure there is a king and rook
+        if (getPiece(x, y) == null || getPiece(4, y) == null) return false;
+        //    !(getPiece(x, y).getName().equals("Rook")) ||
+        //    !(getPiece(4, y).getName().equals("King"))) return false;
+        // Gets the direction to move to the rook
+        int shift = (x - 4) / Math.abs(x - 4);
+        // Checks empty space between king and rook
+        for (int i = 4 + shift; i != x; i = i + shift) {
+
+            if (getPiece(i, y) != null) return false;
+        }
+
+        return true;
+    }
+
+    private void getCastles() {
+        // white kingside, white queenside, black kingside, black queenside
+        canCastle[0] = canCastle(7, 0);
+        canCastle[1] = canCastle(0, 0);
+        canCastle[2] = canCastle(7, 7);
+        canCastle[3] = canCastle(0, 7);
+
+    }
+
     public List<int[]> getValidMoves(int x, int y) {
         // get all places piece can move to
         ArrayList<int[]> moves = getMoves(x,y);
@@ -208,8 +240,11 @@ public class Board {
             }
         }
 
+
         // check for castling
         if (piece instanceof King && !piece.hasMoved()) {
+
+            getCastles();
             if (piece.getPlayer().toString().equals(WHITE)) {
                 if (canCastle[1]) moves.add(new int[]{x - 2, y});
                 if (canCastle[0]) moves.add(new int[]{x + 2, y});
@@ -224,9 +259,9 @@ public class Board {
 
     public boolean isCheck(String player) {
         Player play = new Player(player);
-        int[][] kings = getPiecePosition(play,"King");
+        List<int[]> kings = getPiecePosition(play,"King");
         if (kings == null) return false;
-        int[] pos = kings[0];
+        int[] pos = kings.get(0);
 
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
@@ -266,24 +301,23 @@ public class Board {
         return true;
     }
 
-    public int[][] getPiecePosition(Player player, String name) {
-        int a = 0;
-        int[][] all = new int[2][2];
+    public List<int[]> getPiecePosition(Player player, String name) {
+        List<int[]> all = new ArrayList<>();//int[2][2];
         int[] pos = new int[2]; // 0 = x, 1 = y
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 Piece piece = getPiece(x,y);
                 if (piece != null) {
                     if (piece.toString().equals(name) && piece.getPlayer().equals(player)) {
+                        all.add(new int[]{x, y});
                         pos[0] = x;
                         pos[1] = y;
-                        all[a] = pos;
-                        a++;
+
                     }
                 }
             }
         }
-        if (a <= 0) return null;
+        // TODO: WORKING HERE if (name.contains)
         return all;
     }
 
