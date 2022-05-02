@@ -1,3 +1,9 @@
+/*
+ * @author: Min Tran
+ * @author: Jaygee Galvez
+ * @description: This fragment handles the chess game functionality and interface.
+ */
+
 package com.example.chess;
 
 import android.content.Context;
@@ -12,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.chess.game.GameController;
-
 
 public class GameFragment extends Fragment implements View.OnClickListener {
 

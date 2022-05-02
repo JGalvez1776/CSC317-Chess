@@ -68,7 +68,6 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // get inflated view and shared prefs
         inflatedView = inflater.inflate(LAYOUT, container, false);
         sharedPref = containerActivity.getPreferences(Context.MODE_PRIVATE);

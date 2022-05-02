@@ -1,8 +1,15 @@
+/*
+ * @author: Min Tran
+ * @author: Jaygee Galvez
+ * @description: This fragment handles the drawing of the chessboard.
+ */
+
 package com.example.chess;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -17,7 +24,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.widget.ImageViewCompat;
 
 import com.example.chess.game.GameController;
@@ -26,34 +32,66 @@ import com.example.chess.game.PuzzleGameController;
 import java.util.HashMap;
 
 public class Chessboard {
-    // board ui
+    // chessboard views, with cell and piece view
     View[][][] drawnBoard = new View[8][8][2];
+
+    // currently selected square
     int[] selected = new int[2];
 
+    // map of piece names to drawable
+    private static final HashMap<String, Integer> drawMap;
+    static {
+        drawMap = new HashMap<>();
+        drawMap.put("blackbishop",R.drawable.blackbishop);
+        drawMap.put("whitebishop",R.drawable.whitebishop);
+        drawMap.put("blackking",R.drawable.blackking);
+        drawMap.put("whiteking",R.drawable.whiteking);
+        drawMap.put("blackknight",R.drawable.blackknight);
+        drawMap.put("whiteknight",R.drawable.whiteknight);
+        drawMap.put("blackpawn",R.drawable.blackpawn);
+        drawMap.put("whitepawn",R.drawable.whitepawn);
+        drawMap.put("blackqueen",R.drawable.blackqueen);
+        drawMap.put("whitequeen",R.drawable.whitequeen);
+        drawMap.put("blackrook",R.drawable.blackrook);
+        drawMap.put("whiterook",R.drawable.whiterook);
+    }
+
+    // fragment and game variables
     protected AppCompatActivity containerActivity;
     protected View inflatedView;
     protected GameController controller;
-    protected HashMap<String,Integer> pieceMap;
 
+    // drawing and animation variables
     int squareSize; int animSpeed;
     int colorDark; int colorLight; int colorHighlight;
 
-    public Chessboard(AppCompatActivity containerActivity, View inflatedView, GameController controller) {
+    /**
+     * Chessboard constructor.
+     * @param containerActivity activity view is contained in
+     * @param inflatedView view to draw on
+     * @param controller game controller
+     */
+    public Chessboard(AppCompatActivity containerActivity, View inflatedView,
+                      GameController controller) {
+        // set fragment and game variables
         this.containerActivity = containerActivity;
         this.inflatedView = inflatedView;
         this.controller = controller;
 
+        // get drawing and animation variables
         squareSize = Math.min(getWidthInPixels(),
                 (int) (getHeightInPixels()-(getHeightInPixels()*0.3)))/8;
-
         colorDark = getThemeColor("colorPrimary");
         colorLight = getThemeColor("colorSecondary");
-        colorHighlight = getThemeColor("colorTertiary");;
-
-        pieceMap = createPieceMap();
+        colorHighlight = getThemeColor("colorTertiary");
         animSpeed = 500;
     }
 
+    /**
+     * Returns the color id of a color given the color name.
+     * @param name color name
+     * @return Color id.
+     */
     public int getThemeColor(String name){
         TypedValue outValue = new TypedValue();
         int colorAttr = containerActivity.getResources().getIdentifier
@@ -62,122 +100,155 @@ public class Chessboard {
         return outValue.data;
     }
 
+    /**
+     * Draws the board based on the current state of the game using FrameLayouts with a
+     * TextView (cell) and ImageView (piece) within a RelativeLayout.
+     */
     public void drawBoard() {
+        // relative layout and frame layout grid
         RelativeLayout rl = inflatedView.findViewById(R.id.board);
         FrameLayout[][] fls = new FrameLayout[8][8];
 
+        // creates frame layout for each square
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                // create frame layout
-                FrameLayout fl = new FrameLayout(containerActivity);
-                setListener(fl,x,y);
-
-                // create piece view
-                ImageView piece = new ImageView(containerActivity);
-                piece.setImageTintMode(android.graphics.PorterDuff.Mode.MULTIPLY);
-                ImageViewCompat.setImageTintList
-                        (piece, ColorStateList.valueOf(getThemeColor("colorSecondary")));
-
-                // create cell view
-                TextView cell = new TextView(containerActivity);
-                LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(squareSize, squareSize);
-                cell.setLayoutParams(p);
-                piece.setLayoutParams(p);
-
-                // set cell color
-                cell.setBackgroundColor(getCellColor(x,y));
-
-                // add to frame layout, row, and drawnBoard
-                fl.addView(cell);
-                fl.addView(piece);
-                fl.setClipChildren(false);
-                fl.setId(View.generateViewId());
+                FrameLayout fl = drawSquare(x,y);
                 fls[x][y] = fl;
-                drawnBoard[x][y] = new View[]{piece, cell};
 
-                // add frame layout to relative layout
+                // adds frame layout to relative layout
                 if (x == 0 && y == 0) rl.addView(fl);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(squareSize, squareSize);
+                RelativeLayout.LayoutParams lp =
+                        new RelativeLayout.LayoutParams(squareSize, squareSize);
                 if (x > 0) lp.addRule(RelativeLayout.RIGHT_OF, fls[x-1][y].getId());
                 if (y > 0) lp.addRule(RelativeLayout.BELOW, fls[x][y-1].getId());
-                if(fl.getParent() != null) {
-                    ((ViewGroup)fl.getParent()).removeView(fl);
-                }
+                if(fl.getParent() != null) ((ViewGroup)fl.getParent()).removeView(fl);
                 rl.addView(fl, lp);
             }
         }
         updateBoard();
     }
 
+    /**
+     * Draws a single square on the chessboard.
+     * @param x x coordinate of square to draw
+     * @param y y coordinate of square to draw
+     * @return FrameLayout with cell and piece views.
+     */
+    private FrameLayout drawSquare(int x, int y) {
+        // create frame layout
+        FrameLayout fl = new FrameLayout(containerActivity);
+        setListener(fl,x,y);
+
+        // create piece view
+        ImageView piece = new ImageView(containerActivity);
+        piece.setImageTintMode(android.graphics.PorterDuff.Mode.MULTIPLY);
+        ImageViewCompat.setImageTintList
+                (piece, ColorStateList.valueOf(getThemeColor("colorSecondary")));
+
+        // create cell view
+        TextView cell = new TextView(containerActivity);
+        LinearLayout.LayoutParams p =
+                new LinearLayout.LayoutParams(squareSize, squareSize);
+        cell.setLayoutParams(p); piece.setLayoutParams(p);
+        cell.setBackgroundColor(getCellColor(x,y));
+
+        // add to frame layout, row, and drawnBoard
+        fl.addView(cell); fl.addView(piece);
+        fl.setClipChildren(false); fl.setId(View.generateViewId());
+        drawnBoard[x][y] = new View[]{piece, cell};
+        return fl;
+    }
+
+    /**
+     * Gets appropriate cell color at given coordinates.
+     * @param x x coordinate of square
+     * @param y y coordinate of square
+     * @return Color id.
+     */
     public int getCellColor(int x, int y) {
         if ((y%2 != 0 && x%2 == 0) || (y%2 == 0 && x%2 != 0))
             return colorDark;
         else return colorLight;
     }
 
+    /**
+     * Sets listener for a view for the given coordinates.
+     * @param view view to set listener
+     * @param x x coordinate assigned to view
+     * @param y y coordinate assigned to view
+     */
     protected void setListener(View view, int x, int y) {
         view.setOnClickListener(v -> {
             int result = controller.select(x, y);
-
             switch (result) {
                 case GameController.NOTHING_SELECTED:
+                    // remove highlight
                     setHighlight(selected[0],selected[1],false);
                     break;
                 case GameController.PIECE_SELECTED:
+                    // remove and set highlight
                     setHighlight(selected[0],selected[1],false);
                     selected[0] = x; selected[1] = y;
                     setHighlight(selected[0],selected[1],true);
                     break;
                 case GameController.PIECE_MOVED:
+                    // animate piece (if applicable) and update board
                     SharedPreferences sharedPref = containerActivity.getPreferences(Context.MODE_PRIVATE);
                     if (sharedPref.getInt("animate",1) == 1) {
-                        if (controller instanceof PuzzleGameController)
-                            animatePiece(selected[0],selected[1],x,y,true);
-                        else animatePiece(selected[0],selected[1],x,y,false);
+                        animatePiece(selected[0],selected[1],x,y, controller instanceof PuzzleGameController);
                     } else updateBoard();
                     break;
             }
         });
     }
 
+    /**
+     * Animates a piece from the starting position to the ending position.
+     * Animates computer move (if applicable).
+     * @param startX starting x coordinate
+     * @param startY starting y coordinate
+     * @param endX ending x coordinate
+     * @param endY ending y coordinate
+     * @param comp whether or not to do computer move
+     */
     private void animatePiece(int startX, int startY, int endX, int endY, boolean comp) {
+        // get piece and bring to front
         ImageView piece = (ImageView) drawnBoard[startX][startY][0];
         FrameLayout fl = (FrameLayout) piece.getParent();
         fl.bringToFront();
+
+        // setup object animator
         int moveX = endX-startX;
         int moveY = endY-startY;
-
         PropertyValuesHolder pX = PropertyValuesHolder.ofFloat("translationX",
                 piece.getTranslationX()+(moveX*(squareSize)));
         PropertyValuesHolder pY = PropertyValuesHolder.ofFloat("translationY",
                 piece.getTranslationY()+(moveY*squareSize));
         ObjectAnimator pieceMove = ObjectAnimator.ofPropertyValuesHolder(piece,pX,pY);
+        pieceMove.setDuration(animSpeed);
         pieceMove.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
+            @Override public void onAnimationStart(Animator animation) {}
+            @Override public void onAnimationCancel(Animator animation) {}
+            @Override public void onAnimationRepeat(Animator animation) {}
             @Override
             public void onAnimationEnd(Animator animation) {
                 // updates board
                 updateBoard();
-                if (comp) {
-                    if (controller instanceof PuzzleGameController) {
-                        if (!controller.gameOver) {
-                            int[] compMove = ((PuzzleGameController) controller).doComputerMove();
-                            animatePiece(compMove[0], compMove[1], compMove[2], compMove[3], false);
-                        }
-                    }
+                if (comp && controller instanceof PuzzleGameController && !controller.gameOver) {
+                    int[] compMove = ((PuzzleGameController) controller).doComputerMove();
+                    animatePiece(compMove[0], compMove[1], compMove[2], compMove[3], false);
                 }
             }
-            @Override
-            public void onAnimationCancel(Animator animation) {}
-            @Override
-            public void onAnimationRepeat(Animator animation) {}
         });
-        pieceMove.setDuration(animSpeed);
         pieceMove.start();
     }
 
+    /**
+     * Sets highlight of board square given its coordinates.
+     * @param x x coordinate of square
+     * @param y y coordinate of square
+     * @param highlight whether or not to highlight square
+     */
     public void setHighlight(int x, int y, boolean highlight) {
         TextView cell = (TextView) drawnBoard[x][y][1];
         if (highlight) {
@@ -187,6 +258,11 @@ public class Chessboard {
         }
     }
 
+    /**
+     * Updates the board according to the game controller.
+     */
+    @SuppressLint("SetTextI18n")
+    @SuppressWarnings("ConstantConditions")
     public void updateBoard() {
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
@@ -195,14 +271,21 @@ public class Chessboard {
                 piece.animate().translationX(0).translationY(0);
                 String pieceName = controller.getPieceName(x,y);
                 if (pieceName != null) {
-                    piece.setImageResource(pieceMap.get(pieceName));
+                    piece.setImageResource(drawMap.get(pieceName));
                 } else piece.setImageResource(R.color.transparent);
 
                 // clear highlight
                 drawnBoard[x][y][1].setBackgroundColor(getCellColor(x,y));
             }
         }
+        updateState();
+    }
 
+    /**
+     * Updates UI with state of the board.
+     */
+    @SuppressLint("SetTextI18n")
+    protected void updateState() {
         // set current turn
         TextView playerText = inflatedView.findViewById(R.id.current_turn);
         String player = controller.getCurrentPlayer();
@@ -219,39 +302,31 @@ public class Chessboard {
         String winner = controller.checkWinner();
         if (winner != null) playerText.setText(winner+" wins!");
 
-        // update move feedback
+        // update move feedback and check if puzzle is completed
         if (controller instanceof PuzzleGameController) {
             PuzzleGameController puzzleController = (PuzzleGameController) controller;
             TextView feedbackText = inflatedView.findViewById(R.id.move_feedback);
-            if (puzzleController.gameOver && !puzzleController.correct) {
-                feedbackText.setText("That move is incorrect!");
-            } else if (puzzleController.gameOver && puzzleController.correct) {
-                playerText.setText("PUZZLE COMPLETED");
+            if (puzzleController.gameOver) {
+                if (puzzleController.correct) playerText.setText("PUZZLE COMPLETED");
+                else feedbackText.setText("That move is incorrect!");
             } else feedbackText.setText("");
         }
     }
 
     /**
-     * Creates a map of piece strings to their respective drawable ids.
-     * @return Map of pieces.
+     * Returns the height of the screen in pixels.
+     * @return Height of screen in pixels.
      */
-    public HashMap<String,Integer> createPieceMap() {
-        HashMap<String,Integer> pMap = new HashMap<>();
-        pMap.put("blackbishop",R.drawable.blackbishop); pMap.put("whitebishop",R.drawable.whitebishop);
-        pMap.put("blackking",R.drawable.blackking); pMap.put("whiteking",R.drawable.whiteking);
-        pMap.put("blackknight",R.drawable.blackknight); pMap.put("whiteknight",R.drawable.whiteknight);
-        pMap.put("blackpawn",R.drawable.blackpawn); pMap.put("whitepawn",R.drawable.whitepawn);
-        pMap.put("blackqueen",R.drawable.blackqueen); pMap.put("whitequeen",R.drawable.whitequeen);
-        pMap.put("blackrook",R.drawable.blackrook); pMap.put("whiterook",R.drawable.whiterook);
-        return pMap;
-    }
-
     protected int getHeightInPixels() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         containerActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.heightPixels;
     }
 
+    /**
+     * Returns the width of the screen in pixels.
+     * @return Width of screen in pixels.
+     */
     protected int getWidthInPixels() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         containerActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
