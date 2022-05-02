@@ -29,7 +29,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * Upon view creation, sets layout, and returns inflated view.
+     * Upon view creation, setups layout, and returns inflated view.
      * @param inflater - layout inflater
      * @param container - view group container
      * @param savedInstanceState - saved instance state

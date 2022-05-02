@@ -30,7 +30,7 @@ public class HelpFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * Upon view creation, sets layout, and returns inflated view.
+     * Upon view creation, setups layout, and returns inflated view.
      * @param inflater - layout inflater
      * @param container - view group container
      * @param savedInstanceState - saved instance state
@@ -60,7 +60,6 @@ public class HelpFragment extends Fragment implements View.OnClickListener {
         FragmentTransaction transaction = containerActivity.
                 getSupportFragmentManager().beginTransaction();
         RulesFragment rf = new RulesFragment();
-        rf.setContainerActivity(containerActivity);
         transaction.replace(R.id.container, rf);
         transaction.addToBackStack(null);
         transaction.commit();
