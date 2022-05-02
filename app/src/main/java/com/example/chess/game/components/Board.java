@@ -207,8 +207,9 @@ public class Board {
             while (checkNext && !blocked) {
                 if (move.canCapture() && getPiece(curX,curY) != null) {
                     moves.add(new int[]{curX, curY});
-                } else if (getPiece(curX,curY) == null)
+                } else if (getPiece(curX,curY) == null) {
                     moves.add(new int[]{curX, curY});
+                }
 
                 // check if enemy piece is blocking the way
                 Piece curPiece = getPiece(curX,curY);
@@ -221,6 +222,7 @@ public class Board {
                 curY += move.getShiftY();
                 checkNext = move.isRepeatable() && canMoveTo(piece, curX, curY);
             }
+            if (piece.toString().equals("Pawn") && moves.size() == 0) break;
         }
 
         // diagonal pawn capture and en pasante
