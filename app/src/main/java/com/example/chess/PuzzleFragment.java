@@ -1,14 +1,19 @@
+/*
+ * @author: Min Tran
+ * @author: Jaygee Galvez
+ * @description: This fragment handles the daily puzzle game functionality and interface.
+ */
+
 package com.example.chess;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -20,18 +25,19 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.chess.game.GameController;
 import com.example.chess.game.PuzzleGameController;
 
-import java.net.URL;
-import java.util.HashMap;
-
 public class PuzzleFragment extends GameFragment {
 
+    // fragment variables
     private static final int LAYOUT = R.layout.fragment_game;
-
     protected AppCompatActivity containerActivity;
     protected View inflatedView;
+
+    // permissions variables
+    ActivityResultLauncher<String> requestPermissionLauncher;
+
+    // game and board variables
     protected GameController controller;
     protected Chessboard chessboard;
-    ActivityResultLauncher<String> requestPermissionLauncher;
     protected int attempts = 0;
 
     /**
@@ -43,7 +49,7 @@ public class PuzzleFragment extends GameFragment {
     }
 
     /**
-     * Upon view creation, sets layout, and returns inflated view.
+     * Upon view creation, setups layout, permission launcher, and game controller.
      * @param inflater layout inflater
      * @param container view group container
      * @param savedInstanceState saved instance state
@@ -52,15 +58,6 @@ public class PuzzleFragment extends GameFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        requestPermissionLauncher = registerForActivityResult(
-                new ActivityResultContracts.RequestPermission(), isGranted -> {
-                    if (isGranted) openShareFragment();
-                });
-
-        // create the game controller
-        new FetchPuzzle().execute(PuzzleGameController.DAILY_PUZZLE_URL);
-
         // get inflated view
         inflatedView = inflater.inflate(LAYOUT, container, false);
 
@@ -71,9 +68,21 @@ public class PuzzleFragment extends GameFragment {
         // update view to fit game mode
         ((TextView) inflatedView.findViewById(R.id.current_check)).setAlpha(0.0F);
 
+        // initializes permission launcher
+        requestPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) openShareFragment();
+            });
+
+        // fetch the game controller
+        new FetchPuzzle().execute(PuzzleGameController.DAILY_PUZZLE_URL);
+
         return inflatedView;
     }
 
+    /**
+     * Setups the board by fetching the controller and drawing the chessboard once fetched.
+     */
     @Override
     public void setupBoard() {
         new FetchPuzzle().execute(PuzzleGameController.DAILY_PUZZLE_URL);
@@ -82,17 +91,20 @@ public class PuzzleFragment extends GameFragment {
     }
 
     /**
-     * Holds on click functions for each button in the layout.
+     * Performs associated actions depending on which view was clicked.
      * @param view view that was clicked
      */
+    @SuppressLint({"SetTextI18n", "NonConstantResourceId"})
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            // refreshes board, updates number of attempts
             case R.id.undo_button:
                 setupBoard();
                 attempts++;
                 ((TextView) inflatedView.findViewById(R.id.attempts_count)).setText("Attempts: "+attempts);
                 break;
+            // opens share fragment
             case R.id.share_button:
                 if (ContextCompat.checkSelfPermission(
                         containerActivity, Manifest.permission.READ_CONTACTS) ==
@@ -103,6 +115,9 @@ public class PuzzleFragment extends GameFragment {
         }
     }
 
+    /**
+     * Performs transaction to open and view share fragment with number of attempts.
+     */
     public void openShareFragment() {
         FragmentTransaction transaction = containerActivity.
                 getSupportFragmentManager().beginTransaction();
@@ -114,13 +129,27 @@ public class PuzzleFragment extends GameFragment {
         transaction.commit();
     }
 
+    /**
+     * Fetches puzzle game controller.
+     */
+    @SuppressLint("StaticFieldLeak")
+    @SuppressWarnings("deprecation")
     private class FetchPuzzle extends AsyncTask<String, Integer, GameController> {
 
+        /**
+         * Given daily puzzle api url, initializes puzzle game controller.
+         * @param urls daily puzzle api url
+         * @return Created controller.
+         */
         @Override
         protected GameController doInBackground(String... urls) {
             return new PuzzleGameController(urls[0]);
         }
 
+        /**
+         * Sets controller to fetched controller and draws chessboard.
+         * @param result fetched controller
+         */
         protected void onPostExecute(GameController result) {
             controller = result;
             chessboard = new Chessboard(containerActivity, inflatedView, controller);

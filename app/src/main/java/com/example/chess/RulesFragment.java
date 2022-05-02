@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 public class RulesFragment extends Fragment {
 
+    // fragment variables
     private static final int LAYOUT = R.layout.fragment_rules;
 
     /**

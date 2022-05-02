@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 public class HelpFragment extends Fragment implements View.OnClickListener {
 
+    // fragment variables
     private static final int LAYOUT = R.layout.fragment_help;
     private AppCompatActivity containerActivity;
 
@@ -49,8 +50,8 @@ public class HelpFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * Holds on click function for rules button.
-     * @param view - view that was clicked
+     * Performs associated actions depending on which view was clicked.
+     * @param view view that was clicked
      */
     @Override
     public void onClick(View view) {

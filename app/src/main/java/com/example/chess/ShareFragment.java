@@ -25,14 +25,17 @@ import java.util.ArrayList;
 
 public class ShareFragment extends Fragment {
 
+    // fragment variables
     private static final int LAYOUT = R.layout.fragment_share;
     private Activity containerActivity;
     private View inflatedView;
-    private int attempts = 0; // number of attempts on puzzle
 
     // contact variables
     ArrayAdapter<String> contactsAdapter;
     private final ArrayList<String> contacts = new ArrayList<>();
+
+    // number of attempts on puzzle
+    private int attempts = 0;
 
     /**
      * Sets container activity.

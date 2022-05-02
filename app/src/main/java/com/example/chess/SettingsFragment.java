@@ -26,11 +26,14 @@ import java.util.HashMap;
 
 public class SettingsFragment extends Fragment {
 
+    // fragment variables
     private static final int LAYOUT = R.layout.fragment_settings;
     private AppCompatActivity containerActivity;
     private View inflatedView;
 
-    private SharedPreferences sharedPref; private SharedPreferences.Editor editor;
+    // preferences variables
+    private SharedPreferences sharedPref;
+    private SharedPreferences.Editor editor;
 
     private static final HashMap<Integer, Integer> themeMap;
     static {

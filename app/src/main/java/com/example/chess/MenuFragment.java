@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 public class MenuFragment extends Fragment implements View.OnClickListener {
 
+    // fragment variables
     private static final int LAYOUT = R.layout.fragment_menu;
     private AppCompatActivity containerActivity;
 
@@ -51,8 +52,8 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * Holds on click functions for each button in the layout.
-     * @param view - view that was clicked
+     * Performs associated actions depending on which view was clicked.
+     * @param view view that was clicked
      */
     @SuppressLint("NonConstantResourceId")
     @Override
