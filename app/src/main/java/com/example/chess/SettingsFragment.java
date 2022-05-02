@@ -54,7 +54,7 @@ public class SettingsFragment extends Fragment {
     }
 
     /**
-     * Upon view creation, setups layout, and returns inflated view.
+     * Upon view creation, setups layout and buttons.
      * @param inflater layout inflater
      * @param container view group container
      * @param savedInstanceState saved instance state

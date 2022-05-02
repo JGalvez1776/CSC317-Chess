@@ -1,5 +1,6 @@
 /*
  * @author: Min Tran
+ * @author: Jaygee Galvez
  * @description: This fragment handles the sharing interface and functionality.
  */
 
@@ -8,7 +9,6 @@ package com.example.chess;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
@@ -18,22 +18,21 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import androidx.core.content.FileProvider;
+
 import androidx.fragment.app.Fragment;
-import java.io.File;
+
 import java.util.ArrayList;
 
 public class ShareFragment extends Fragment {
 
     private static final int LAYOUT = R.layout.fragment_share;
-    private int attempts = 0;
+    private Activity containerActivity;
+    private View inflatedView;
+    private int attempts = 0; // number of attempts on puzzle
 
-    private Activity containerActivity; // activity that contains fragment
-    private View inflatedView; // fragment view
-
-    private ListView contactsListView; // contacts list view
-    ArrayAdapter<String> contactsAdapter; // contacts adapter
-    private final ArrayList<String> contacts = new ArrayList<String>(); // list of contacts
+    // contact variables
+    ArrayAdapter<String> contactsAdapter;
+    private final ArrayList<String> contacts = new ArrayList<>();
 
     /**
      * Sets container activity.
@@ -43,12 +42,16 @@ public class ShareFragment extends Fragment {
         this.containerActivity = containerActivity;
     }
 
+    /**
+     * Sets number of attempts on puzzle.
+     * @param attempts - number of attempts
+     */
     public void setAttempts(int attempts) {
         this.attempts = attempts;
     }
 
     /**
-     * Upon view creation, sets layout, inflated view, and sets up contact list view.
+     * Upon view creation, setups layout and contact list view.
      * @param inflater - layout inflater
      * @param container - view group container
      * @param savedInstanceState - saved instance state
@@ -117,11 +120,11 @@ public class ShareFragment extends Fragment {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("vnd.android.cursor.dir/email");
 
-        // email text
+        // create email text
         String text = "I beat today's daily puzzle in "+attempts+" attempts!";
         if (attempts == 0) text = "I beat today's daily puzzle perfectly!";
 
-        // add email address
+        // add email address and email text to intent
         intent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] { emailAddress });
         intent.putExtra(android.content.Intent.EXTRA_TEXT,text);
 
@@ -151,9 +154,10 @@ public class ShareFragment extends Fragment {
      * Sets up contacts adapter using contacts list.
      */
     private void setUpContactsAdapter() {
-        contactsListView = inflatedView.findViewById(R.id.contact_list);
+        // contact variables
+        ListView contactsListView = inflatedView.findViewById(R.id.contact_list);
         contactsAdapter = new
-                ArrayAdapter(containerActivity, R.layout.contact_row,
+                ArrayAdapter<>(containerActivity, R.layout.contact_row,
                 R.id.contact_text, contacts);
         contactsListView.setAdapter(contactsAdapter);
     }
