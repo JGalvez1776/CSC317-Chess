@@ -1,6 +1,5 @@
-/*
+/**
  * @author: Min Tran
- * @author: Jaygee Galvez
  * @description: This fragment handles the settings screen, which allows the user to adjust their
  * preferences.
  */

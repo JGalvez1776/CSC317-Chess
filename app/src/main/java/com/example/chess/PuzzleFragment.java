@@ -1,6 +1,5 @@
-/*
+/**
  * @author: Min Tran
- * @author: Jaygee Galvez
  * @description: This fragment handles the daily puzzle game functionality and interface.
  */
 

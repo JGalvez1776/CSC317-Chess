@@ -1,6 +1,5 @@
-/*
+/**
  * @author: Min Tran
- * @author: Jaygee Galvez
  * @description: This fragment handles the menu screen and its associated buttons.
  */
 

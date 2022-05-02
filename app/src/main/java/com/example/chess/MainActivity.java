@@ -1,6 +1,5 @@
-/*
+/**
  * @author: Min Tran
- * @author: Jaygee Galvez
  * @description: This activity handles the container activity for all the app's fragments.
  */
 

@@ -1,6 +1,5 @@
-/*
+/**
  * @author: Min Tran
- * @author: Jaygee Galvez
  * @description: This fragment handles the rules screen, which opens a webpage of chess rules.
  */
 
