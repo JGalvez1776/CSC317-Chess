@@ -100,9 +100,11 @@ public class PuzzleFragment extends GameFragment {
         switch (view.getId()) {
             // refreshes board, updates number of attempts
             case R.id.undo_button:
-                setupBoard();
-                attempts++;
-                ((TextView) inflatedView.findViewById(R.id.attempts_count)).setText("Attempts: "+attempts);
+                if (controller != null) {
+                    setupBoard();
+                    attempts++;
+                    ((TextView) inflatedView.findViewById(R.id.attempts_count)).setText("Attempts: " + attempts);
+                }
                 break;
             // opens share fragment
             case R.id.share_button:

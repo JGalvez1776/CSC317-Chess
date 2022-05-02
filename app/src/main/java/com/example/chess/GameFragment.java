@@ -91,7 +91,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.undo_button) {
-            setupBoard();
+            if (controller != null) setupBoard();
         }
     }
 }
