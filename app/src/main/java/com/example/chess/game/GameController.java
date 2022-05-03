@@ -18,7 +18,7 @@ public class GameController {
     // controller variables
     protected Board game;
     protected int[] selected = null;
-    protected int[] lastMoveorigin = null;
+    protected int[] lastMoveOrigin = null;
     public boolean gameOver = false;
 
     // final variables
@@ -85,7 +85,7 @@ public class GameController {
             List<int[]> potentialMoves = game.getValidMoves(selected[0], selected[1]);
             if (potentialMoves != null && validMove(potentialMoves, x, y)) {
                 game.move(selected[0], selected[1], x, y);
-                lastMoveorigin = selected;
+                lastMoveOrigin = selected;
                 selected = null;
                 return PIECE_MOVED;
             }

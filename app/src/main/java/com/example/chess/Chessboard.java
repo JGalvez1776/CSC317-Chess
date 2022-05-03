@@ -226,8 +226,7 @@ public class Chessboard {
         fl.bringToFront();
 
         // setup object animator
-        int moveX = endX-startX;
-        int moveY = endY-startY;
+        int moveX = endX-startX; int moveY = endY-startY;
         PropertyValuesHolder pX = PropertyValuesHolder.ofFloat("translationX",
                 piece.getTranslationX()+(moveX*(squareSize)));
         PropertyValuesHolder pY = PropertyValuesHolder.ofFloat("translationY",
@@ -243,7 +242,9 @@ public class Chessboard {
                 // updates board
                 updateBoard();
                 if (comp && controller instanceof PuzzleGameController && !controller.gameOver) {
-                    int[] compMove = ((PuzzleGameController) controller).doComputerMove();
+                    PuzzleGameController puzzleGameController = (PuzzleGameController) controller;
+                    int[] compMove = puzzleGameController
+                            .getMoveAnimation(puzzleGameController.doComputerMove());
                     animatePiece(compMove[0], compMove[1], compMove[2], compMove[3], false);
                 }
             }
