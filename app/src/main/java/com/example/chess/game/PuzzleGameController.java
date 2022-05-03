@@ -1,3 +1,9 @@
+/*
+ * @author: Min Tran and Jaygee Galvez
+ * @description: Uses the GameController to make a controller suitable
+ *               for playing chess puzzles instead of chess games.
+ */
+
 package com.example.chess.game;
 
 import com.example.chess.game.components.Board;
@@ -69,6 +75,15 @@ public class PuzzleGameController extends GameController {
         if (pgn != null) parsePGN(pgn);
     }
 
+    /**
+     * Serves the core game logic. Represents "selecting" a square on the board.
+     * First call of select will select a piece at a square.
+     * Second call of select will move the piece to the selected square (If its a valid move)
+     * If during either call, the position contains no piece or is an invalid move, must reselect
+     * @param x int x coordinate to grab the piece from
+     * @param y int y coordinate to grab the piece from
+     * @return int error code. See class's static constants
+     */
     @Override
     public int select(int x, int y) {
         int result = super.select(x,y);
@@ -90,10 +105,20 @@ public class PuzzleGameController extends GameController {
         return result;
     }
 
+    /**
+     * Checks if the puzzle is completed correctly.
+     * @return Whether or not the puzzle is completed correctly.
+     */
     private boolean puzzleComplete() {
         return currMove >= solution.length || solution[currMove][0].equals("*");
     }
 
+    /**
+     * Returns a string representing a move made, given the end positions of the piece.
+     * @param x end x coordinate
+     * @param y end y coordinate
+     * @return String representation of move.
+     */
     private String[] getMoveString(int x, int y) {
         int[] pos = convertPosition(x,y);
         Piece piece = game.getPiece(pos[0], pos[1]);
@@ -121,6 +146,11 @@ public class PuzzleGameController extends GameController {
         return move;
     }
 
+    /**
+     * Performs a computer move in response to a player move
+     * @return 4 integers in an array which are the positions
+     *         x,y of the start and end of a move
+     */
     public int[] doComputerMove() {
         String[] move = solution[currMove];
         int[] computerMove = getComputerMove(move);
@@ -130,6 +160,12 @@ public class PuzzleGameController extends GameController {
         return computerMove;
     }
 
+    /**
+     * Calculates the next computer move and returns an integer representation of the move.
+     * @param move String array representing move.
+     * @return 4 integers in an array which are the positions
+     *         x,y of the start and end of a move
+     */
     private int[] getComputerMove(String[] move) {
         int[] computerMove = new int[4];
 
@@ -162,12 +198,22 @@ public class PuzzleGameController extends GameController {
         return computerMove;
     }
 
+    /**
+     * Given a computer move, returns the appropriate coordinates for animating it.
+     * @param move integer array representation of computer move
+     * @return Integer array of coordinates for animation.
+     */
     public int[] getMoveAnimation(int[] move) {
         int[] startPos = convertPosition(move[0],move[1]);
         int[] endPos = convertPosition(move[2],move[3]);
         return new int[]{startPos[0],startPos[1],endPos[0],endPos[1]};
     }
 
+    /**
+     * Given a PGN representation of the chess game, parses it into an array of strings
+     * arrays representing a move.
+     * @param pgn PGN string
+     */
     private void parsePGN(String pgn) {
         Player currPlayer = game.getCurrentPlayer();
 
@@ -181,6 +227,12 @@ public class PuzzleGameController extends GameController {
         }
     }
 
+    /**
+     * Converts a single move in PGN format to a string array representation of the move.
+     * @param pgnMove PGN move string
+     * @param currPlayer player using this move
+     * @return String array representation of move.
+     */
     @SuppressWarnings("ConstantConditions")
     private String[] translatePGNMove(String pgnMove, Player currPlayer) {
         String player = currPlayer.toString();
@@ -211,6 +263,11 @@ public class PuzzleGameController extends GameController {
                 startPos[0], startPos[1]};
     }
 
+    /**
+     * Trims a raw PGN move string of unnecessary characters and numbers.
+     * @param pgnMove raw PGN move string
+     * @return Trimmed PGN move string.
+     */
     private String trimPGNMove(String pgnMove) {
         // remove move number and extra characters
         while (Character.isDigit(pgnMove.charAt(0)))
@@ -219,16 +276,23 @@ public class PuzzleGameController extends GameController {
         return pgnMove;
     }
 
+    /**
+     * Returns a string array of the starting position denoted by the PGN string.
+     * @param pgnMove PGN move string
+     * @return String array of the starting position.
+     */
     @SuppressWarnings("ConstantConditions")
     private String[] getPGNMoveStart(String pgnMove) {
         String[] startPos = new String[]{ANY_POSITION, ANY_POSITION};
         if (pgnMove.length() > 3) {
             char check = pgnMove.charAt(1);
+            // check first character
             if (Character.isAlphabetic(check)) startPos[0] =
                     Integer.toString(posMap.get(check));
             if (Character.isDigit(check)) startPos[1] =
                     Integer.toString(posMap.get(check));
             if (pgnMove.length() > 4) {
+                // check second character
                 check = pgnMove.charAt(2);
                 if (Character.isAlphabetic(check)) startPos[0] =
                         Integer.toString(posMap.get(check));

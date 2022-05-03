@@ -1,5 +1,5 @@
 /*
- * @author: Jaugee Galvez
+ * @author: Jaygee Galvez
  * @description: Servers as a controller class for the game of chess.
  *               Abstracts the implementation to instead focus on selecting
  *               pieces to move and where to.
