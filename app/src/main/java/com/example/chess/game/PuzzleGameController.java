@@ -1,8 +1,3 @@
-/**
- * @author: Min Tran
- * @description: Uses the GameController to make a controller suitable
- *               for playing chess puzzles instead of chess games.
- */
 package com.example.chess.game;
 
 import com.example.chess.game.components.Board;
@@ -24,21 +19,24 @@ import java.util.List;
 public class PuzzleGameController extends GameController {
 
     public static final String DAILY_PUZZLE_URL = "https://api.chess.com/pub/puzzle";
-    public static final String RANDOM_PUZZLE_URL = "https://api.chess.com/pub/puzzle/random";
-    public String[] solution;
+
+    // controller variables
+    public String[][] solution;
+    public int[] computerMove;
     public int currMove = 0;
     public boolean correct = true;
-    public int[] computerMove;
+    public String[] orig;
+
+    // map to translate FEN chess notation
     private static HashMap<Character, String> fenMap;
     static {
         fenMap = new HashMap<>();
-        fenMap.put('R', "Rook");
-        fenMap.put('Q', "Queen");
-        fenMap.put('K', "King");
-        fenMap.put('N', "Knight");
-        fenMap.put('B', "Bishop");
-        fenMap.put('P', "Pawn");
+        fenMap.put('R', "Rook"); fenMap.put('Q', "Queen");
+        fenMap.put('K', "King"); fenMap.put('N', "Knight");
+        fenMap.put('B', "Bishop"); fenMap.put('P', "Pawn");
     }
+
+    // map to translate chess positions
     private static HashMap<Character, Integer> posMap;
     static {
         posMap = new HashMap<>();
@@ -53,33 +51,22 @@ public class PuzzleGameController extends GameController {
     }
 
     /**
-     * Creates a new instance using a url to a chess.com puzzle
-     * @param url API Url for the chess.com puzzle api
+     * Default constructor for class. Parses board and solution from daily puzzle API.
      */
-    public PuzzleGameController(String url) {
-        JSONObject json = getJSON(url);
+    public PuzzleGameController() {
+        JSONObject json = getJSON(DAILY_PUZZLE_URL);
         String position = null;
-        String sol = null;
+        String pgn = null;
         try {
             position = json.getString("fen");
-            sol = json.getString("pgn");
+            pgn = json.getString("pgn");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        game = new Board(position);
-        sol = parseSolution(sol);
-        for (String s: solution) System.out.println(s);
+        if (position != null) game = new Board(position);
+        if (pgn != null) parseSolution(pgn);
     }
 
-    /**
-     * Serves the core game logic. Represents "selecting" a square on the board.
-     * First call of select will select a piece at a square.
-     * Second call of select will move the piece to the selected square (If its a valid move)
-     * If during either call, the position contains no piece or is an invalid move, must reselect
-     * @param x int x coordinate to grab the piece from
-     * @param y int y coordinate to grab the piece from
-     * @return int error code. See class's static constants
-     */
     @Override
     public int select(int x, int y) {
         // do normal select
@@ -89,110 +76,154 @@ public class PuzzleGameController extends GameController {
         if (result == PIECE_MOVED) {
             y = convertPosition(x, y)[1];
             Piece piece = game.getPiece(x, y);
+
             if (piece != null) {
-                int pos[] = convertPosition(x,y);
-                String move = piece.getPlayer() + " " + piece + " " + pos[0] + " " + pos[1];
+                int[] pos = convertPosition(x,y);
+
+                // get move string
+                String[] move = new String[]{piece.getPlayer().toString(), piece.toString(),
+                        Integer.toString(pos[0]), Integer.toString(pos[1]), "ANY", "ANY"};
+
+                // check for castle
                 if (piece instanceof King && (Math.abs(x - lastMoveorigin[0]) >= 2)) {
                     int difference = x - lastMoveorigin[0];
-                    if (difference > 0) move = "O-O";
-                    else move = "O-O-O";
+                    if (difference > 0) move = new String[]{piece.getPlayer().toString(),"KingCastle"};
+                    else move = new String[]{piece.getPlayer().toString(),"QueenCastle"};
                 }
-                System.out.println(move);
-                if (!move.equals(solution[currMove])) {
+
+                // check if piece location was specified
+                int[] realMoveorigin = convertPosition(lastMoveorigin[0],lastMoveorigin[1]);
+                if (solution[currMove].length > 4) {
+                    if (!solution[currMove][4].equals("ANY")) {
+                        move[4] = Integer.toString(realMoveorigin[0]);
+                    }
+                    if (!solution[currMove][5].equals("ANY")) {
+                        move[5] = Integer.toString(realMoveorigin[1]);
+                    }
+                }
+                System.out.println(orig[currMove]);
+                System.out.println(Arrays.toString(move));
+                System.out.println(Arrays.toString(solution[currMove]));
+
+                if (!String.join(" ",move).equals(String.join(" ",solution[currMove]))) {
                     correct = false;
                     endGame();
                     return result;
                 }
                 currMove++;
                 // determine to end game or do computer move
-                if (solution[currMove].equals("*"))
+                if (currMove >= solution.length || solution[currMove][0].equals("*"))
                     endGame();
             }
         }
         return result;
     }
 
-    /**
-     * Sets how a computer moves in response to a correct player move
-     * @param player Player the computer plays as
-     * @param name Name of the move the computer is to make
-     * @param x X coordinate of starting location of the piece
-     * @param y Y coordinate of starting location of the piece
-     */
-    public void setComputerMove(Player player, String name, int x, int y) {
-        System.out.print("SET: " + x + " " + y);
-        List<int[]> pieces = game.getPiecePosition(player, name);
-        int[] pos = convertPosition(x,y);
-        for (int[] location : pieces) {
-            List<int[]> validMoves = game.getValidMoves(location[0], location[1]);
-            if (validMoves != null && validMove(validMoves, pos[0], pos[1])) {
-                computerMove = new int[]{location[0],location[1],pos[0],pos[1]};
+    public int[] doComputerMove() {
+        System.out.println(orig[currMove]);
+        String[] move = solution[currMove];
+        System.out.println("Attempting: " + Arrays.toString(solution[currMove]));
+        if (String.join(" ",move).equals("White KingCastle")) {
+            computerMove = new int[]{4, 0, 6, 0};
+        } else if (String.join(" ",move).equals("White QueenCastle")) {
+            computerMove = new int[]{4, 0, 2, 0};
+        } else if (String.join(" ",move).equals("Black KingCastle")) {
+            computerMove = new int[]{4, 7, 6, 7};
+        } else if (String.join(" ",move).equals("Black QueenCastle")) {
+            computerMove = new int[]{4, 7, 2, 7};
+        } else {
+            System.out.println("Breakdown: " + Arrays.toString(move));
+            Player player = new Player(move[0]);
+            String name = move[1];
+            int x = Integer.parseInt(move[2]);
+            int y = Integer.parseInt(move[3]);
+            System.out.print("SET: " + x + " " + y);
+            List<int[]> pieces = game.getPiecePosition(player, name);
+            int[] pos = convertPosition(x, y);
+            for (int[] location : pieces) {
+                List<int[]> validMoves = game.getValidMoves(location[0], location[1]);
+                if (validMoves != null && validMove(validMoves, pos[0], pos[1])) {
+                    if (!move[4].equals("ANY")) {
+                        if (Integer.parseInt(move[4]) != location[0]) continue;
+                    }
+                    if (!move[5].equals("ANY")) {
+                        if (Integer.parseInt(move[4]) != location[1]) continue;
+                    }
+                    computerMove = new int[]{location[0], location[1], pos[0], pos[1]};
+                }
             }
         }
-    }
 
-    /**
-     * Performs a computer move in response to a player move
-     * @return 4 integers in an array which are the positions
-     *         x,y of the start and end of a move
-     */
-    public int[] doComputerMove() {
-        String[] split = solution[currMove].split(" ");
-        System.out.println("Attempting: " + solution[currMove]);
-        System.out.println("Breakdown: " + Arrays.toString(split));
-        setComputerMove(new Player(split[0]), split[1], Integer.parseInt(split[2]), Integer.parseInt(split[3]));
         System.out.println("Comp Moves: " + Arrays.toString(computerMove));
-
         game.move(computerMove[0],computerMove[1],computerMove[2],computerMove[3]);
+
         currMove++;
+        System.out.println("NEXT MOVE: "+orig[currMove]+" "+Arrays.toString(solution[currMove]));
         int[] cMove1 = convertPosition(computerMove[0],computerMove[1]);
         int[] cMove2 = convertPosition(computerMove[2],computerMove[3]);
         int[] animMove = new int[]{cMove1[0],cMove1[1],cMove2[0],cMove2[1]};
         return animMove;
     }
 
-    /**
-     * Parses the solution to a puzzle from how it is formatted in the Chess.com API
-     * @param sol String solution to a puzzle from the API
-     * @return String output of the solution that can be used by this controller
-     */
     private String parseSolution(String sol) {
         String result;
         Player currPlayer = game.getCurrentPlayer();
         int m = sol.indexOf("1...");
         if (m == -1) m = sol.indexOf("1.");
-        System.out.println(sol);
-        System.out.println(m);
         result = sol.substring(m);
         String[] split = result.split(" ");
+        orig = result.split(" ");
+
+        solution = new String[split.length][];
         for (int i = 0; i < split.length; i++) {
-            System.out.println(split[i]);
             if (split[i].equals("*") || split[i].equals("1-0") || split[i].equals("0-1")) {
-                split[i] = "*";
+                solution[i] = new String[]{"*"};
                 continue;
             }
-            if (Character.isDigit(split[i].charAt(0))) {
+            while (Character.isDigit(split[i].charAt(0))) {
                 split[i] = split[i].substring(1);
             }
-            split[i] = split[i].replaceAll("\\.|x|\\+","");
+            split[i] = split[i].replaceAll("\\.|x|#|\\+","");
             System.out.println(split[i]);
 
             if (split[i].equals("O-O-O") || split[i].equals("O-O")) {
+                if (split[i].equals("O-O-O")) solution[i] = new String[]{currPlayer.toString(),"QueenCastle"};
+                else if (split[i].equals("O-O")) solution[i] = new String[]{currPlayer.toString(),"KingCastle"};
                 currPlayer = game.otherPlayer(currPlayer);
                 continue;
             }
 
             // translate to move
+
             String pieceName = fenMap.get(split[i].charAt(0));
             if (!Character.isUpperCase(split[i].charAt(0))) {
                 pieceName = fenMap.get('P');
+                split[i] = "P"+split[i];
             }
-            split[i] = currPlayer + " " + pieceName + " "
-                    + posMap.get(split[i].charAt(1)) + " " + posMap.get(split[i].charAt(2));
+
+            // check if position of piece is notated
+            String piecePosX = "ANY";
+            String piecePosY = "ANY";
+
+            if (split[i].length() > 3) {
+                char check1 = split[i].charAt(1);
+                if (Character.isAlphabetic(check1)) piecePosX = Integer.toString(posMap.get(check1));
+                if (Character.isDigit(check1)) piecePosY = Integer.toString(posMap.get(check1));
+                if (split[i].length() > 4) {
+                    char check2 = split[i].charAt(2);
+                    if (Character.isAlphabetic(check2)) piecePosX = Integer.toString(posMap.get(check2));
+                    if (Character.isDigit(check2)) piecePosY = Integer.toString(posMap.get(check2));
+                }
+            }
+
+            int splitEnd = split[i].length()-1;
+            solution[i] = new String[]{currPlayer.toString(),
+                pieceName, posMap.get(split[i].charAt(splitEnd-1)).toString(),
+                posMap.get(split[i].charAt(splitEnd)).toString(),
+                piecePosX, piecePosY};
             currPlayer = game.otherPlayer(currPlayer);
         }
-        solution = split;
-        System.out.println("SOLUTION: " + Arrays.toString(solution));
+        for (String[] s: solution) System.out.println("SOLUTION: " + Arrays.toString(s));
         return result;
     }
 
