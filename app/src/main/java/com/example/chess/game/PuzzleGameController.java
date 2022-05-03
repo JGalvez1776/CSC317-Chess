@@ -1,3 +1,8 @@
+/**
+ * @author: Min Tran
+ * @description: Uses the GameController to make a controller suitable
+ *               for playing chess puzzles instead of chess games.
+ */
 package com.example.chess.game;
 
 import com.example.chess.game.components.Board;
@@ -47,6 +52,10 @@ public class PuzzleGameController extends GameController {
         posMap.put('h',7); posMap.put('8',0);
     }
 
+    /**
+     * Creates a new instance using a url to a chess.com puzzle
+     * @param url API Url for the chess.com puzzle api
+     */
     public PuzzleGameController(String url) {
         JSONObject json = getJSON(url);
         String position = null;
@@ -62,6 +71,15 @@ public class PuzzleGameController extends GameController {
         for (String s: solution) System.out.println(s);
     }
 
+    /**
+     * Serves the core game logic. Represents "selecting" a square on the board.
+     * First call of select will select a piece at a square.
+     * Second call of select will move the piece to the selected square (If its a valid move)
+     * If during either call, the position contains no piece or is an invalid move, must reselect
+     * @param x int x coordinate to grab the piece from
+     * @param y int y coordinate to grab the piece from
+     * @return int error code. See class's static constants
+     */
     @Override
     public int select(int x, int y) {
         // do normal select
@@ -94,6 +112,13 @@ public class PuzzleGameController extends GameController {
         return result;
     }
 
+    /**
+     * Sets how a computer moves in response to a correct player move
+     * @param player Player the computer plays as
+     * @param name Name of the move the computer is to make
+     * @param x X coordinate of starting location of the piece
+     * @param y Y coordinate of starting location of the piece
+     */
     public void setComputerMove(Player player, String name, int x, int y) {
         System.out.print("SET: " + x + " " + y);
         List<int[]> pieces = game.getPiecePosition(player, name);
@@ -106,6 +131,11 @@ public class PuzzleGameController extends GameController {
         }
     }
 
+    /**
+     * Performs a computer move in response to a player move
+     * @return 4 integers in an array which are the positions
+     *         x,y of the start and end of a move
+     */
     public int[] doComputerMove() {
         String[] split = solution[currMove].split(" ");
         System.out.println("Attempting: " + solution[currMove]);
@@ -121,6 +151,11 @@ public class PuzzleGameController extends GameController {
         return animMove;
     }
 
+    /**
+     * Parses the solution to a puzzle from how it is formatted in the Chess.com API
+     * @param sol String solution to a puzzle from the API
+     * @return String output of the solution that can be used by this controller
+     */
     private String parseSolution(String sol) {
         String result;
         Player currPlayer = game.getCurrentPlayer();

@@ -1,4 +1,8 @@
+/**
+ * Contains the Queen piece for a chess game
+ */
 package com.example.chess.game.pieces.concrete;
+
 
 import com.example.chess.game.components.Move;
 import com.example.chess.game.components.Player;
@@ -8,10 +12,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Queen extends Piece {
+    /**
+     * Default constructor for a piece
+     * @param player Player who owns this piece
+     */
     public Queen(Player player) {
         super("Queen", player, 8);
     }
 
+    /**
+     * Returns all moves a piece can make
+     * @return List of all moves the piece can make
+     */
     @Override
     public List<Move> getPotentialMoves() {
         ArrayList<Move> moves = new ArrayList<>();

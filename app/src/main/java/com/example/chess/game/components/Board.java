@@ -1,3 +1,7 @@
+/**
+ * @author: Min Tran and Jaygee Galvez
+ * @description: Provides a chess board and the moves to play a game of chess.
+ */
 package com.example.chess.game.components;
 
 import java.util.ArrayList;
@@ -33,19 +37,18 @@ public class Board {
         pieceMap.put('p', Pawn::new);
     }
 
+    /**
+     * Default constructor for a new board
+     */
     public Board() {
         this(DEFAULT_BOARD);
     }
 
-    @Override
-    public String toString() {
-        // TODO: Convert to FEN notation (Format constructor use to make a Board)
-        return "NULL";
-    }
-
+    /**
+     * Creates a board using a string in FEN notation.
+     * @param initalPosition a string that represents a board used FEN notation
+     */
     public Board(String initalPosition) {
-        // Lowercase is black
-        // "8/6p1/8/K6P/7P/kr5R/8/8 w - - 0 1"
         // FEN (Forsyth-Edwards Notation)
         // https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
         int row = HEIGHT - 1;
@@ -91,6 +94,13 @@ public class Board {
         for (boolean b: canCastle) System.out.println(b);
     }
 
+    /**
+     * Moves a piece from one position to another
+     * @param startX X coordinate to start at
+     * @param startY Y coordinate to start at
+     * @param endX X coordinate to end at
+     * @param endY Y coordinate to end at
+     */
     public void move(int startX, int startY, int endX, int endY) {
         System.out.println("INFO: " + startX + " " + startY + " " + endX + " " + endY);
         Piece selected = getPiece(startX, startY);
@@ -174,6 +184,9 @@ public class Board {
         return true;
     }
 
+    /**
+     * Updates canCastle array to reflect board state
+     */
     private void getCastles() {
         // white kingside, white queenside, black kingside, black queenside
         canCastle[0] = canCastle(7, 0);
@@ -183,15 +196,24 @@ public class Board {
 
     }
 
+    /**
+     * Returns a list of moves a piece at a given position can make
+     * @param x X coordinate of piece to get moves of
+     * @param y Y coordinate of piece to get moves of
+     * @return List of int[] which are the x, y positions a piece can move to
+     */
     public List<int[]> getValidMoves(int x, int y) {
         // get all places piece can move to
         ArrayList<int[]> moves = getMoves(x,y);
-
-        // TODO: Also make sure that moves do not put oneself into check!
-
         return moves;
     }
 
+    /**
+     * Helper to generate the list of moves a piece at a given position can make
+     * @param x X coordinate of piece to get moves of
+     * @param y Y coordinate of piece to get moves of
+     * @return List of int[] which are the x, y positions a piece can move to
+     */
     private ArrayList<int[]> getMoves(int x, int y) {
         ArrayList<int[]> moves = new ArrayList<>();
         Piece piece = getPiece(x, y);
@@ -262,6 +284,11 @@ public class Board {
         return moves;
     }
 
+    /**
+     * Returns if a given player is in check
+     * @param player Name of the player to check if they are in check
+     * @return Boolean which is if given player is in check
+     */
     public boolean isCheck(String player) {
         Player play = new Player(player);
         List<int[]> kings = getPiecePosition(play,"King");
@@ -293,12 +320,23 @@ public class Board {
         return false;
     }
 
+    /**
+     * Returns a given Player's opponent
+     * @param p Player to get the opponent of
+     * @return Player that is the opponent
+     */
     public Player otherPlayer(Player p) {
         if (p.toString().equals(WHITE)) {
             return players[1];
         } else return players[0];
     }
 
+    /**
+     * Returns if a x, y coordinate is in a board
+     * @param x X coordinate to check if in board
+     * @param y Y coordinate to check if in board
+     * @return Boolean if the coordinate is in the board
+     */
     private boolean inBoard(int x, int y) {
         if ((x < 0 || x >= 8)
         || (y < 0 || y >= 8))
@@ -306,6 +344,12 @@ public class Board {
         return true;
     }
 
+    /**
+     * Finds the location of all pieces of a given type owned by a player
+     * @param player Player to find the pieces of
+     * @param name Name of the piece to find
+     * @return List contains int[] which are the x, y positions of their selected piece
+     */
     public List<int[]> getPiecePosition(Player player, String name) {
         List<int[]> all = new ArrayList<>();//int[2][2];
         int[] pos = new int[2]; // 0 = x, 1 = y
@@ -326,6 +370,11 @@ public class Board {
         return all;
     }
 
+    /**
+     * Returns if a player still has a king
+     * @param player Name of the player to check
+     * @return Boolean if a player has a king
+     */
     public boolean isAlive(String player) {
         Player p = new Player(player);
         if (getPiecePosition(p, "King").isEmpty()) {
@@ -334,22 +383,46 @@ public class Board {
         return true;
     }
 
+    /**
+     * Returns if a piece can move to a given square
+     * @param piece Piece to move
+     * @param x X coordinate of where the piece is moving to
+     * @param y Y coordinate of where the piece is moving to
+     * @return Boolean if the piece can move to the given location
+     */
     private boolean canMoveTo(Piece piece, int x, int y) {
         return 0 <= x && x < WIDTH && 0 <= y && y < HEIGHT &&
                (getPiece(x, y) == null ||
                 !getPiece(x, y).getPlayer().equals(piece.getPlayer()));
     }
 
+    /**
+     * Places a piece at a given position
+     * @param piece Piece to place on the board
+     * @param x X coordinate to place piece
+     * @param y Y coordinate to place piece
+     * @return Placed piece
+     */
     private Piece place(Piece piece, int x, int y) {
         board[y][x] = piece;
         return board[y][x];
     }
 
+    /**
+     * Gets a piece from the board
+     * @param x X coordinate of piece
+     * @param y Y coordinate of piece
+     * @return Piece at given location
+     */
     public Piece getPiece(int x, int y) {
         if (!inBoard(x,y)) return null;
         return board[y][x];
     }
 
+    /**
+     * Returns the current player
+     * @return Player who's turn it is
+     */
     public Player getCurrentPlayer() {
         return players[currentPlayer];
     }

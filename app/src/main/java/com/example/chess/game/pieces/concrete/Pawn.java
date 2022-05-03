@@ -1,3 +1,6 @@
+/**
+ * Contains the Pawn piece for a chess game
+ */
 package com.example.chess.game.pieces.concrete;
 
 import com.example.chess.game.components.Board;
@@ -9,10 +12,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Pawn extends Piece {
+    /**
+     * Default constructor for a piece
+     * @param player Player who owns this piece
+     */
     public Pawn(Player player) {
         super("Pawn", player, 1);
     }
 
+    /**
+     * Returns all moves a piece can make
+     * @return List of all moves the piece can make
+     */
     @Override
     public List<Move> getPotentialMoves() {
         ArrayList<Move> moves = new ArrayList<>();
