@@ -22,8 +22,8 @@ public class Board {
     private Piece[][] board = new Piece[HEIGHT][WIDTH];
     private Player[] players = new Player[]{new Player(WHITE), new Player(BLACK)};
     private int currentPlayer = 0;
-    private boolean[] canCastle = new boolean[4];
     // white kingside, white queenside, black kingside, black queenside
+    private boolean[] canCastle = new boolean[4];
 
     public static final String DEFAULT_BOARD = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     private static HashMap<Character, Placeable> pieceMap;
@@ -46,20 +46,17 @@ public class Board {
 
     /**
      * Creates a board using a string in FEN notation.
-     * @param initalPosition a string that represents a board used FEN notation
+     * @param initialPosition a string that represents a board used FEN notation
      */
-    public Board(String initalPosition) {
+    public Board(String initialPosition) {
         // FEN (Forsyth-Edwards Notation)
         // https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
-        int row = HEIGHT - 1;
-        int column = 0;
-        int stringIndex = 0;
-        char character = initalPosition.charAt(0);
+        int row = HEIGHT - 1; int column = 0;
+        int stringIndex = 0; char character = initialPosition.charAt(0);
         while (character != ' ') {
-            character = initalPosition.charAt(stringIndex);
+            character = initialPosition.charAt(stringIndex);
             if (character == '/' || column >= WIDTH) {
-                row--;
-                column = -1;
+                row--; column = -1;
             } else if (Character.isDigit(character)) {
                 column = column + Character.getNumericValue(character) - 1;
             } else {
@@ -67,22 +64,38 @@ public class Board {
                 Player player = players[Character.toLowerCase(character) == character ? 1 : 0];
                 board[row][column] = pieceMap.get(Character.toLowerCase(character)).create(player);
             }
-            stringIndex++;
-            column++;
+            stringIndex++; column++;
         }
 
-        char player = initalPosition.charAt(stringIndex);
-        if (player == 'b') {
-            currentPlayer = 1;
-        } else {
-            currentPlayer = 0;
-        }
+        // get current player
+        readPlayer(initialPosition,stringIndex);
         stringIndex += 2;
 
         // handles castling
-        char c = initalPosition.charAt(stringIndex);
+        readCastling(initialPosition, stringIndex);
+
+    }
+
+    /**
+     * Reads player from FEN string.
+     * @param initialPosition intial position string
+     * @param stringIndex index to read from string
+     */
+    private void readPlayer(String initialPosition, int stringIndex) {
+        char player = initialPosition.charAt(stringIndex);
+        if (player == 'b') currentPlayer = 1;
+        else currentPlayer = 0;
+    }
+
+    /**
+     * Reads valid castling from FEN string.
+     * @param initialPosition intial position string
+     * @param stringIndex index to read from string
+     */
+    private void readCastling(String initialPosition, int stringIndex) {
+        char c = initialPosition.charAt(stringIndex);
         while (c != ' ') {
-            c = initalPosition.charAt(stringIndex);
+            c = initialPosition.charAt(stringIndex);
             switch (c) {
                 case 'K': canCastle[0] = true; break;
                 case 'Q': canCastle[1] = true; break;
@@ -91,65 +104,92 @@ public class Board {
             }
             stringIndex++;
         }
-        for (boolean b: canCastle) System.out.println(b);
     }
 
     /**
-     * Moves a piece from one position to another
+     * Moves a piece from one position to another.
      * @param startX X coordinate to start at
      * @param startY Y coordinate to start at
      * @param endX X coordinate to end at
      * @param endY Y coordinate to end at
      */
     public void move(int startX, int startY, int endX, int endY) {
-        System.out.println("INFO: " + startX + " " + startY + " " + endX + " " + endY);
+        // move piece
         Piece selected = getPiece(startX, startY);
-        Player player = selected.getPlayer();
-
         place(null, startX, startY);
         place(selected, endX, endY);
 
+        // special move handlers
+        handlePawn(selected, startX, startY, endX, endY);
+        handleCastling(selected, startX, startY, endX, endY);
+
+        // set current player and selected has moved
+        currentPlayer = (currentPlayer + 1) % players.length;
+        selected.setMoved();
+    }
+
+    /**
+     * Handles special pawn behavior.
+     * @param selected selected piece
+     * @param startX X coordinate to start at
+     * @param startY Y coordinate to start at
+     * @param endX X coordinate to end at
+     * @param endY Y coordinate to end at
+     */
+    private void handlePawn(Piece selected, int startX, int startY, int endX, int endY) {
+        Player player = selected.getPlayer();
         if (selected.toString().equals("Pawn")) {
             // promotion
-            if (selected.getPlayer().toString().equals(WHITE) && (endY >= 7)) {
-                selected = place(new Queen(players[currentPlayer]),endX,endY);
-            } else if (selected.getPlayer().toString().equals(BLACK) && (endY <= 0)) {
-                selected = place(new Queen(players[currentPlayer]),endX,endY);
+            if (player.toString().equals(WHITE) && (endY >= 7)) {
+                place(new Queen(players[currentPlayer]),endX,endY);
+            } else if (player.toString().equals(BLACK) && (endY <= 0)) {
+                place(new Queen(players[currentPlayer]),endX,endY);
             }
             // en pasante
             if (endX == startX-1) {
                 Piece left = getPiece(startX - 1, startY);
-                if (left != null && left.getPlayer().equals(otherPlayer(player))) {
+                if (left != null && left.getPlayer().equals(otherPlayer(player)))
                     place(null, startX - 1, startY);
-                }
             }
             if (endX == startX+1) {
                 Piece right = getPiece(startX+1,startY);
-                if (right != null && right.getPlayer().equals(otherPlayer(player))) {
+                if (right != null && right.getPlayer().equals(otherPlayer(player)))
                     place(null, startX+1, startY);
-                }
             }
         }
+    }
 
+    /**
+     * Handles castling behavior.
+     * @param selected selected piece
+     * @param startX X coordinate to start at
+     * @param startY Y coordinate to start at
+     * @param endX X coordinate to end at
+     * @param endY Y coordinate to end at
+     */
+    private void handleCastling(Piece selected, int startX, int startY, int endX, int endY) {
         if (selected.toString().equals("King")) {
-            // castling
             if (selected.getPlayer().toString().equals(WHITE)) {
+                // white kingside
                 if (endX - startX > 1) {
                     place(null,7,0);
                     place(new Rook(players[currentPlayer]),endX-1,startY);
                     canCastle[0] = false; canCastle[1] = false;
                 }
+                // white queenside
                 if (endX - startX < -1) {
                     place(null,0,0);
                     place(new Rook(players[currentPlayer]),endX+1,startY);
                     canCastle[0] = false; canCastle[1] = false;
                 }
             } else {
+                // black kingside
                 if (endX - startX > 1) {
                     place(null,7,7);
                     place(new Rook(players[currentPlayer]),endX-1,startY);
                     canCastle[2] = false; canCastle[3] = false;
                 }
+                // black queenside
                 if (endX - startX < -1) {
                     place(null,0,7);
                     place(new Rook(players[currentPlayer]),endX+1,startY);
@@ -157,9 +197,6 @@ public class Board {
                 }
             }
         }
-
-        currentPlayer = (currentPlayer + 1) % players.length;
-        selected.setMoved();
     }
 
     /**
@@ -171,15 +208,13 @@ public class Board {
     private boolean canCastle(int x, int y) {
         // Makes sure there is a king and rook
         if (getPiece(x, y) == null || getPiece(4, y) == null) return false;
-        //    !(getPiece(x, y).getName().equals("Rook")) ||
-        //    !(getPiece(4, y).getName().equals("King"))) return false;
+
         // Gets the direction to move to the rook
         int shift = (x - 4) / Math.abs(x - 4);
-        // Checks empty space between king and rook
-        for (int i = 4 + shift; i != x; i = i + shift) {
 
+        // Checks empty space between king and rook
+        for (int i = 4 + shift; i != x; i = i + shift)
             if (getPiece(i, y) != null) return false;
-        }
 
         return true;
     }
@@ -215,62 +250,81 @@ public class Board {
      * @return List of int[] which are the x, y positions a piece can move to
      */
     private ArrayList<int[]> getMoves(int x, int y) {
+        // get move variables
         ArrayList<int[]> moves = new ArrayList<>();
-        Piece piece = getPiece(x, y);
-        if (piece == null)
-            return null;
+        Piece piece = getPiece(x, y); if (piece == null) return null;
         Player player = piece.getPlayer();
         List<Move> potentialMoves = piece.getPotentialMoves();
+
         for (Move move : potentialMoves) {
-            int curX = x + move.getShiftX();
-            int curY = y + move.getShiftY();
+            int curX = x + move.getShiftX(); int curY = y + move.getShiftY();
             boolean checkNext = canMoveTo(piece, curX, curY);
             boolean blocked = false;
             while (checkNext && !blocked) {
-                if (move.canCapture() && getPiece(curX,curY) != null) {
+                if (move.canCapture() && getPiece(curX,curY) != null)
                     moves.add(new int[]{curX, curY});
-                } else if (getPiece(curX,curY) == null) {
+                else if (getPiece(curX,curY) == null)
                     moves.add(new int[]{curX, curY});
-                }
-
                 // check if enemy piece is blocking the way
                 Piece curPiece = getPiece(curX,curY);
                 if (curPiece != null)
                     if (otherPlayer(piece.getPlayer()).equals(curPiece.getPlayer()))
                         blocked = true;
-
                 // get next curX curY and checkNext
-                curX += move.getShiftX();
-                curY += move.getShiftY();
+                curX += move.getShiftX(); curY += move.getShiftY();
                 checkNext = move.isRepeatable() && canMoveTo(piece, curX, curY);
             }
             if (piece.toString().equals("Pawn") && moves.size() == 0) break;
         }
+        // add special moves
+        getPawnMoves(x,y,piece,player,moves);
+        getCastlingMoves(x,y,piece,moves);
+        return moves;
+    }
 
-        // diagonal pawn capture and en pasante
+    /**
+     * Helper function to handle pawn diagonal capture and en pasante.
+     * @param x X coordinate of piece to get moves of
+     * @param y Y coordinate of piece to get moves of
+     * @param piece pawn piece object
+     * @param player current player
+     * @param moves List of int[] which are the x, y positions a piece can move to
+     */
+    private void getPawnMoves(int x, int y, Piece piece, Player player, List<int[]> moves) {
         if (piece.toString().equals("Pawn")) {
+            // get direction
             int dir = 1;
             if (player.toString().equals(BLACK)) dir = -1;
+
+            // rightside diagonal capture or en pasante
             Piece diag1 = getPiece(x+1,y+dir);
             Piece right = getPiece(x+1,y);
             if ((diag1 != null && diag1.getPlayer().equals(otherPlayer(player)))
-            || (right != null && right.getPlayer().equals(otherPlayer(player)))) {
+                    || (right != null && right.getPlayer().equals(otherPlayer(player)))) {
                 if (inBoard(x+1,y+dir))
                     moves.add(new int[]{x+1,y+dir});
             }
+
+            // leftside diagonal capture or en pasante
             Piece diag2 = getPiece(x-1,y+dir);
             Piece left = getPiece(x-1,y);
             if ((diag2 != null && diag2.getPlayer().equals(otherPlayer(player)))
-            || (left != null && left.getPlayer().equals(otherPlayer(player)))) {
+                    || (left != null && left.getPlayer().equals(otherPlayer(player)))) {
                 if (inBoard(x-1,y+dir))
                     moves.add(new int[]{x-1,y+dir});
             }
         }
+    }
 
-
-        // check for castling
+    /**
+     * Helper function to handle castling.
+     * @param x X coordinate of piece to get moves of
+     * @param y Y coordinate of piece to get moves of
+     * @param piece king piece object
+     * @param moves List of int[] which are the x, y positions a piece can move to
+     */
+    private void getCastlingMoves(int x, int y, Piece piece, List<int[]> moves) {
         if (piece instanceof King && !piece.hasMoved()) {
-
             getCastles();
             if (piece.getPlayer().toString().equals(WHITE)) {
                 if (canCastle[1]) moves.add(new int[]{x - 2, y});
@@ -280,8 +334,6 @@ public class Board {
                 if (canCastle[2]) moves.add(new int[]{x + 2, y});
             }
         }
-
-        return moves;
     }
 
     /**
@@ -295,7 +347,7 @@ public class Board {
         if (kings.isEmpty()) return false;
         int[] pos = kings.get(0);
 
-        for (int x = 0; x < 8; x++) {
+        for (int x = 0; x < 8; x++)
             for (int y = 0; y < 8; y++) {
                 // check if there is a piece and if they are opponent player
                 Piece p = getPiece(x,y);
@@ -316,7 +368,6 @@ public class Board {
                     }
                 }
             }
-        }
         return false;
     }
 
@@ -361,12 +412,10 @@ public class Board {
                         all.add(new int[]{x, y});
                         pos[0] = x;
                         pos[1] = y;
-
                     }
                 }
             }
         }
-        // TODO: WORKING HERE if (name.contains)
         return all;
     }
 
