@@ -25,7 +25,8 @@ public class Board {
     // white kingside, white queenside, black kingside, black queenside
     private boolean[] canCastle = new boolean[4];
 
-    public static final String DEFAULT_BOARD = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    public static final String DEFAULT_BOARD =
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     private static HashMap<Character, Placeable> pieceMap;
     static {
         pieceMap = new HashMap<>();
