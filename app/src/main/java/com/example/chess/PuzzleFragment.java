@@ -145,7 +145,7 @@ public class PuzzleFragment extends GameFragment {
          */
         @Override
         protected GameController doInBackground(String... urls) {
-            return new PuzzleGameController(urls[0]);
+            return new PuzzleGameController();
         }
 
         /**
