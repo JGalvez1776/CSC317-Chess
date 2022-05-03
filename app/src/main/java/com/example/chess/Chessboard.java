@@ -80,6 +80,11 @@ public class Chessboard {
         this.inflatedView = inflatedView;
         this.controller = controller;
 
+        SharedPreferences sharedPref =
+                containerActivity.getPreferences(Context.MODE_PRIVATE);
+        if (sharedPref.getInt("animate",1) != 1) animSpeed = 0;
+        else animSpeed = 500;
+
         // get drawing and animation variables
         squareSize = Math.min(getWidthInPixels(),
                 (int) (getHeightInPixels()-(getHeightInPixels()*0.30)))/8;
@@ -88,7 +93,6 @@ public class Chessboard {
         colorSelect = getThemeColor("colorSecondary");
         colorHighlight = getThemeColor("colorTertiary");
         colorHighlightDark = getThemeColor("colorOnTertiary");
-        animSpeed = 500;
     }
 
     /**
@@ -201,12 +205,8 @@ public class Chessboard {
                     break;
                 case GameController.PIECE_MOVED:
                     // animate piece (if applicable) and update board
-                    SharedPreferences sharedPref =
-                            containerActivity.getPreferences(Context.MODE_PRIVATE);
-                    if (sharedPref.getInt("animate",1) == 1) {
-                        animatePiece(selected[0],selected[1],x,y,
-                                controller instanceof PuzzleGameController);
-                    } else updateBoard();
+                    animatePiece(selected[0],selected[1],x,y,
+                            controller instanceof PuzzleGameController);
                     break;
             }
         });
@@ -235,6 +235,7 @@ public class Chessboard {
                 piece.getTranslationY()+(moveY*squareSize));
         ObjectAnimator pieceMove = ObjectAnimator.ofPropertyValuesHolder(piece,pX,pY);
         pieceMove.setDuration(animSpeed);
+        System.out.println(animSpeed);
         pieceMove.addListener(new Animator.AnimatorListener() {
             @Override public void onAnimationStart(Animator animation) {}
             @Override public void onAnimationCancel(Animator animation) {}
