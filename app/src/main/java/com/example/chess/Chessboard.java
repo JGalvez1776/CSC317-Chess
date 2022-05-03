@@ -63,7 +63,8 @@ public class Chessboard {
     // drawing and animation variables
     public static final int SELECT = 0;
     public static final int AVAILABLE = 1;
-    int squareSize; int animSpeed;
+    public static final int ANIMATION_SPEED = 500;
+    boolean animate; int squareSize;
     int colorDark; int colorLight; int colorSelect;
     int colorHighlight; int colorHighlightDark;
 
@@ -80,10 +81,10 @@ public class Chessboard {
         this.inflatedView = inflatedView;
         this.controller = controller;
 
+        // set animation preference
         SharedPreferences sharedPref =
                 containerActivity.getPreferences(Context.MODE_PRIVATE);
-        if (sharedPref.getInt("animate",1) != 1) animSpeed = 0;
-        else animSpeed = 500;
+        animate = sharedPref.getInt("animate", 1) == 1;
 
         // get drawing and animation variables
         squareSize = Math.min(getWidthInPixels(),
@@ -205,7 +206,9 @@ public class Chessboard {
                     break;
                 case GameController.PIECE_MOVED:
                     // animate piece (if applicable) and update board
-                    animatePiece(selected[0],selected[1],x,y,
+                    if (animate) animatePiece(selected[0],selected[1],x,y,ANIMATION_SPEED,
+                            controller instanceof PuzzleGameController);
+                    else animatePiece(selected[0],selected[1],x,y,0,
                             controller instanceof PuzzleGameController);
                     break;
             }
@@ -219,9 +222,10 @@ public class Chessboard {
      * @param startY starting y coordinate
      * @param endX ending x coordinate
      * @param endY ending y coordinate
+     * @param speed animation speed
      * @param comp whether or not to do computer move
      */
-    private void animatePiece(int startX, int startY, int endX, int endY, boolean comp) {
+    private void animatePiece(int startX, int startY, int endX, int endY, int speed, boolean comp) {
         // get piece and bring to front
         ImageView piece = (ImageView) drawnBoard[startX][startY][0];
         FrameLayout fl = (FrameLayout) piece.getParent();
@@ -229,14 +233,24 @@ public class Chessboard {
 
         // setup object animator
         int moveX = endX-startX; int moveY = endY-startY;
+        if (!animate) { moveX = 0; moveY = 0; }
         PropertyValuesHolder pX = PropertyValuesHolder.ofFloat("translationX",
                 piece.getTranslationX()+(moveX*(squareSize)));
         PropertyValuesHolder pY = PropertyValuesHolder.ofFloat("translationY",
                 piece.getTranslationY()+(moveY*squareSize));
         ObjectAnimator pieceMove = ObjectAnimator.ofPropertyValuesHolder(piece,pX,pY);
-        pieceMove.setDuration(animSpeed);
-        System.out.println(animSpeed);
-        pieceMove.addListener(new Animator.AnimatorListener() {
+        pieceMove.setDuration(speed);
+        setupAnimatorListener(pieceMove,comp);
+        pieceMove.start();
+    }
+
+    /**
+     * Sets up listener for animator which controls computer movement animation.
+     * @param animator animator to add listener to
+     * @param comp whether or not to do computer move
+     */
+    private void setupAnimatorListener(ObjectAnimator animator, boolean comp) {
+        animator.addListener(new Animator.AnimatorListener() {
             @Override public void onAnimationStart(Animator animation) {}
             @Override public void onAnimationCancel(Animator animation) {}
             @Override public void onAnimationRepeat(Animator animation) {}
@@ -248,11 +262,13 @@ public class Chessboard {
                     PuzzleGameController puzzleGameController = (PuzzleGameController) controller;
                     int[] compMove = puzzleGameController
                             .getMoveAnimation(puzzleGameController.doComputerMove());
-                    animatePiece(compMove[0], compMove[1], compMove[2], compMove[3], false);
+                    if (!animate) animatePiece(compMove[0], compMove[1], compMove[2], compMove[3],
+                            500, false);
+                    else animatePiece(compMove[0], compMove[1], compMove[2], compMove[3],
+                            ANIMATION_SPEED, false);
                 }
             }
         });
-        pieceMove.start();
     }
 
     /**
