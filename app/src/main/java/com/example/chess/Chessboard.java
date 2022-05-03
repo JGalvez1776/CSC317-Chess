@@ -287,7 +287,6 @@ public class Chessboard {
                 cell.setBackgroundColor(colorHighlightDark);
             } else cell.setBackgroundColor(colorHighlight);
         }
-
     }
 
     /**
