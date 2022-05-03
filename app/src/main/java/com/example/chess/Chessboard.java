@@ -201,9 +201,11 @@ public class Chessboard {
                     break;
                 case GameController.PIECE_MOVED:
                     // animate piece (if applicable) and update board
-                    SharedPreferences sharedPref = containerActivity.getPreferences(Context.MODE_PRIVATE);
+                    SharedPreferences sharedPref =
+                            containerActivity.getPreferences(Context.MODE_PRIVATE);
                     if (sharedPref.getInt("animate",1) == 1) {
-                        animatePiece(selected[0],selected[1],x,y, controller instanceof PuzzleGameController);
+                        animatePiece(selected[0],selected[1],x,y,
+                                controller instanceof PuzzleGameController);
                     } else updateBoard();
                     break;
             }

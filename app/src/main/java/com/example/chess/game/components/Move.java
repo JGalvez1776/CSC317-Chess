@@ -1,4 +1,4 @@
-/**
+/*
  * @author: Jaygee Galvez
  * @description: Provides way to make types of moves for pieces
  */

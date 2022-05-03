@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="square_size">50dp</dimen>
-    <!-- cell size is square size * 8 -->
-    <dimen name="cell_size">400dp</dimen>
-</resources>

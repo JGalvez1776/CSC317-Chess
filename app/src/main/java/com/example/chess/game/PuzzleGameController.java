@@ -93,7 +93,8 @@ public class PuzzleGameController extends GameController {
             String[] move = getMoveString(x,y); // get move string
 
             // check if move was correct
-            if (!String.join(" ",move).equals(String.join(" ",solution[currMove]))) {
+            if (!String.join(" ",move).equals
+                    (String.join(" ",solution[currMove]))) {
                 correct = false; endGame();
                 return result;
             }

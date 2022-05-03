@@ -4,16 +4,20 @@
     <string name="new_game">START GAME</string>
     <string name="cont">CONTINUE</string>
     <string name="daily_puzzle">DAILY PUZZLE</string>
+
     <string name="undo">RESTART</string>
     <string name="share">SHARE</string>
+
     <string name="theme">Theme</string>
     <string name="animation_setting">Enable Animation</string>
     <string name="undo_setting">Allow Restart</string>
-    <string name="loading">Loading Puzzle!</string>
+
     <string name="theme1">Classic</string>
     <string name="theme2">Wooden</string>
     <string name="theme3">Olive</string>
     <string name="theme4">Night</string>
+
+    <string name="loading">Loading Puzzle!</string>
     <string name="white_turn">WHITE\'S TURN</string>
     <string name="black_turn">BLACK\'S TURN</string>
 

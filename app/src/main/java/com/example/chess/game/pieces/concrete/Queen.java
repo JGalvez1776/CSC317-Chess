@@ -1,8 +1,7 @@
-/**
+/*
  * Contains the Queen piece for a chess game
  */
 package com.example.chess.game.pieces.concrete;
-
 
 import com.example.chess.game.components.Move;
 import com.example.chess.game.components.Player;

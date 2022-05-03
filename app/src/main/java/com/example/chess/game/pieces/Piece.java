@@ -1,4 +1,4 @@
-/**
+/*
  * @author: Jaygee Galvez
  * @description: Abstract class that implements functionality of
  *               a basic chess piece. Classes that implement

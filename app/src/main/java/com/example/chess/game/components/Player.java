@@ -1,4 +1,4 @@
-/**
+/*
  * @author: Jaygee Galvez
  * @description: Class to contain information of a player of Chess
  */

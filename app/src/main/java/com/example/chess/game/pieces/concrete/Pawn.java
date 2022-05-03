@@ -1,4 +1,4 @@
-/**
+/*
  * Contains the Pawn piece for a chess game
  */
 package com.example.chess.game.pieces.concrete;
