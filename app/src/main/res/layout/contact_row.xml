@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+@author: Min Tran
+@description: This XML file contains a row for a contact list.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -9,4 +14,5 @@
         android:id="@+id/contact_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
 </LinearLayout>

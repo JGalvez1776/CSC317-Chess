@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+@author: Min Tran
+@description: This XML file contains the menu screen of the app.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Guidelines -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/menu_top"
         android:layout_width="wrap_content"
@@ -32,6 +38,7 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.85" />
 
+    <!-- Title -->
     <ImageView
         android:id="@+id/title_image"
         android:layout_width="150dp"
@@ -53,6 +60,7 @@
         app:layout_constraintLeft_toLeftOf="@id/menu_left"
         app:layout_constraintRight_toRightOf="@id/menu_right" />
 
+    <!-- New Game Button -->
     <TextView
         style="@style/MenuButton"
         android:id="@+id/new_game_button"
@@ -64,6 +72,7 @@
         app:layout_constraintLeft_toLeftOf="@id/menu_left"
         app:layout_constraintRight_toRightOf="@id/menu_right"/>
 
+    <!-- Daily Puzzle Button -->
     <TextView
         style="@style/MenuButton"
         android:id="@+id/daily_puzzle_button"
@@ -76,6 +85,7 @@
         app:layout_constraintLeft_toLeftOf="@id/menu_left"
         app:layout_constraintRight_toRightOf="@id/menu_right"/>
 
+    <!-- Settings Button -->
     <ImageView
         style="@style/MenuButton"
         android:id="@+id/settings_button"
@@ -92,6 +102,7 @@
         android:src="@drawable/gear_icon"
         app:tint="?colorPrimary" />
 
+    <!-- Help Button -->
     <ImageView
         style="@style/MenuButton"
         android:id="@+id/help_button"
