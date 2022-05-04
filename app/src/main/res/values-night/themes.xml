@@ -1,16 +1,53 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.Chess" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+    <!-- Classic Theme (default) -->
+    <style name="Theme.Classic" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Theme colors -->
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/gray</item>
+        <item name="colorSecondary">@color/yellow</item>
+        <item name="colorTertiary">@color/green</item>
+        <item name="colorOnTertiary">@color/dark_green</item>
+        <item name="colorAccent">@color/black</item>
+        <!-- Status bar color -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
+    </style>
+
+    <!-- Wooden Theme -->
+    <style name="Theme.Wooden" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Theme colors -->
+        <item name="colorPrimary">@color/light_wood</item>
+        <item name="colorPrimaryDark">@color/dark_wood</item>
+        <item name="colorSecondary">@color/yellow</item>
+        <item name="colorTertiary">@color/green</item>
+        <item name="colorOnTertiary">@color/dark_green</item>
+        <item name="colorAccent">@color/black</item>
+        <!-- Status bar color -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
+    </style>
+
+    <!-- Olive Theme -->
+    <style name="Theme.Olive" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Theme colors -->
+        <item name="colorPrimary">@color/light_olive</item>
+        <item name="colorPrimaryDark">@color/dark_olive</item>
+        <item name="colorSecondary">@color/yellow</item>
+        <item name="colorTertiary">@color/green</item>
+        <item name="colorOnTertiary">@color/dark_green</item>
+        <item name="colorAccent">@color/black</item>
+        <!-- Status bar color -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
+    </style>
+
+    <!-- Night Theme -->
+    <style name="Theme.Night" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Theme colors -->
+        <item name="colorPrimary">@color/light_night</item>
+        <item name="colorPrimaryDark">@color/dark_night</item>
+        <item name="colorSecondary">@color/yellow</item>
+        <item name="colorTertiary">@color/green</item>
+        <item name="colorOnTertiary">@color/dark_green</item>
+        <item name="colorAccent">@color/black</item>
+        <!-- Status bar color -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
     </style>
 </resources>

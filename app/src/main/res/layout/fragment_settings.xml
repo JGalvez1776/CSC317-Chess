@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+@author: Min Tran
+@description: This XML file contains the settings screen of the app.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_margin="10dp">
 
+    <!-- Theme Title -->
     <TextView
         style="@style/Heading"
         android:id="@+id/theme_text"
@@ -13,6 +19,7 @@
         android:layout_marginLeft="10dp"
         android:text="@string/theme" />
 
+    <!-- Theme Selection -->
     <RadioGroup
         android:id="@+id/theme_group"
         android:layout_width="wrap_content"
@@ -52,6 +59,7 @@
 
     </RadioGroup>
 
+    <!-- Animation Setting -->
     <LinearLayout
         android:id="@+id/animation_setting"
         android:layout_width="wrap_content"
@@ -75,6 +83,7 @@
 
     </LinearLayout>
 
+    <!-- Undo Setting -->
     <LinearLayout
         android:id="@+id/undo_setting"
         android:layout_width="wrap_content"
@@ -97,7 +106,5 @@
             android:text="@string/undo_setting"/>
 
     </LinearLayout>
-
-
 
 </LinearLayout>
